@@ -2,60 +2,139 @@
 
 	<title>Gabriel P. Andrade</title>
 
+	<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+	* {
+		 box-sizing: border-box;
+	}
+
+	body {
+		 margin: 0;
+	}
+
+	img {
+    	max-width: 100%;
+    	height: auto;
+	}
+
+	.vl {
+	    border-left: 1px solid black;
+		height: 68%;
+		position: absolute;
+		left: 29%;
+		margin-left: -3px;
+		top: 13%;
+	}
+
+	.footer{
+		bottom:0;
+		left: 0;
+		content: "";
+		display: table;
+		width: 100%;
+		clear: both;
+
+	}
+
+	.stripe {
+		 float: left;
+		 width: 100%;
+		 padding: 10px;
+	}
+
+	/* Create two equal columns that floats next to each other */
+	.column {
+		 float: left;
+		 width: 30%;
+		 padding: 10px;
+	}
+
+	/* Clear floats after the columns */
+	.row:after {
+		 content: "";
+		 display: table;
+		 clear: both;
+	}
+	</style>
+	</head>
+
 	<body>
 	<font face="courier" size=4>
+		<br>
+		<hr>
+		<div class="row">
+			<div class="stripe" style="background-color:#ededed;">
+				<center><p><a href="index.html">About Me</a> | <a href="research.html">Research</a> | <a href="curriculum_vitae.pdf">CV</a></p></center>
+			 </div>
+		</div>
+		<hr>
 
-		<center><h1>Gabriel P. Andrade</h1>
-			<p><img src="pic_for_website.jpg" alt="picture" width="20%" height="45%"/></p>
-			<br>
-			<hr>
-			<p><a href="index.html">About Me</a> | <a href="research.html">Research</a> | <a href="curriculum_vitae.pdf">CV</a> | <a href="contact_info.html">Contact Info</a></p></center>
-			<hr><h2>About Me</h2>
-			
-			<font size=3>
+		<div class="row">
+		  	<div class="column" style="background-color:#ffffff;">
+				<center><p><img src="pic_for_website.jpg" alt="picture of me" width="80%" height="80%"></p></center>
+				<div class="vl"></div>
+			</div>
+			<div class="column" style="background-color:#ffffff;">
+				<h3>Gabriel P. Andrade</h3>
+			</div>
+		</div>
+	
+		<div class="row">
+			<div class="stripe" style="background-color:#ffffff;">
+				<hr><h2>About Me</h2>
+				
+				<font size=3>
 
-			<p>I'm a second year M.S. student in <a href="https://www.math.umass.edu/">applied mathematics</a> at UMass Amherst. My research interests are in complex adaptive systems. Specifically, I enjoy studying them in the context of unconventional computing (bio-inspired and neural computing in particular). Currently I am working both as a graduate research assistant in the <a href="http://binds.cs.umass.edu/">Biologically Inspired Neural and Dynamical Systems Laboratory</a> in the computer science department at UMass Amherst and as a graduate IT assistant in the department of mathematics &amp; statistics at UMass Amherst. During my undergraduate studies I majored in pure math and minored in philosophy.</p>
+				<p>I'm a second year M.S. student in <a href="https://www.math.umass.edu/">applied mathematics</a> at UMass Amherst. My research interests are in complex adaptive systems. Specifically, I enjoy studying them in the context of unconventional computing (bio-inspired and neural computing in particular). Currently I am working both as a graduate research assistant in the <a href="http://binds.cs.umass.edu/">Biologically Inspired Neural and Dynamical Systems Laboratory</a> in the computer science department at UMass Amherst and as a graduate IT assistant in the department of mathematics &amp; statistics at UMass Amherst. During my undergraduate studies I majored in pure math and minored in philosophy.</p>
+			</div>
+		</div>
 
 
+		
+		<script type="text/javascript">
+		var tmonth=new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 
-			<hr><script type="text/javascript">
-			var tmonth=new Array("January","February","March","April","May","June","July","August","September","October","November","December");
-
-			function GetClock() {
-				var d=new Date();
-				var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
-				if(nyear<1000) {
-					nyear+=1900;
-				}
-				var d=new Date();
-				var nhour=d.getHours(),nmin=d.getMinutes(),ap;
-				if(nhour==0) {
-					ap=" AM";nhour=12;
-				}
-				else if(nhour<12) {
-					ap=" AM";
-				}
-				else if(nhour==12) {
-					ap=" PM";
-				}
-				else if(nhour>12) {
-					ap=" PM";
-					nhour -= 12;
-				}
-				if(nmin<=9) {
-					nmin="0" + nmin;
-				}
-
-				document.getElementById('clockbox').innerHTML=""+tmonth[nmonth]+" "+ndate+", "+nyear+" "+nhour+":"+nmin+ap+"";
+		function GetClock() {
+			var d=new Date();
+			var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
+			if(nyear<1000) {
+				nyear+=1900;
+			}
+			var d=new Date();
+			var nhour=d.getHours(),nmin=d.getMinutes(),ap;
+			if(nhour==0) {
+				ap=" AM";nhour=12;
+			}
+			else if(nhour<12) {
+				ap=" AM";
+			}
+			else if(nhour==12) {
+				ap=" PM";
+			}
+			else if(nhour>12) {
+				ap=" PM";
+				nhour -= 12;
+			}
+			if(nmin<=9) {
+				nmin="0" + nmin;
 			}
 
-			window.onload=function() {
-				GetClock();
-				setInterval(GetClock, 1000);
-			}
-			</script>
+			document.getElementById('clockbox').innerHTML=""+tmonth[nmonth]+" "+ndate+", "+nyear+" "+nhour+":"+nmin+ap+"";
+		}
 
-		<div id="clockbox"></div>
+		window.onload=function() {
+			GetClock();
+			setInterval(GetClock, 1000);
+		}
+		</script>
+
+
+		<div class="footer">
+			<hr><center><div class="stripe" style="background-color:#ededed;">
+				<div id="clockbox"></div>
+			</div><hr></center>
+		</div>
 
 	</body>
 </html>

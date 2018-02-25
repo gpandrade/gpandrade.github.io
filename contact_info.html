@@ -6,25 +6,46 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style>
 	* {
-	    box-sizing: border-box;
+		 box-sizing: border-box;
 	}
 
 	body {
-	    margin: 0;
+		 margin: 10;
+	}
+
+	img {
+    	max-width: 100%;
+    	height: auto;
+	}
+
+	.footer{
+		bottom:0;
+		left: 0;
+		content: "";
+		display: table;
+		width: 100%;
+		clear: both;
+
+	}
+
+	.stripe {
+		 float: left;
+		 width: 100%;
+		 padding: 10px;
 	}
 
 	/* Create two equal columns that floats next to each other */
 	.column {
-	    float: left;
-	    width: 50%;
-	    padding: 10px;
+		 float: left;
+		 width: 30%;
+		 padding: 10px;
 	}
 
 	/* Clear floats after the columns */
 	.row:after {
-	    content: "";
-	    display: table;
-	    clear: both;
+		 content: "";
+		 display: table;
+		 clear: both;
 	}
 	</style>
 	</head>
@@ -32,15 +53,20 @@
 	<body>
 	<font face="courier" size=4>
 
-		<center>
+		
 		<br>
 		<hr>
-		<p><a href="index.html">About Me</a> | <a href="research.html">Research</a> | <a href="curriculum_vitae.pdf">CV</a> | <a href="contact_info.html">Contact Info</a></p></center><hr></center>
+		<div class="row">
+			<div class="stripe" style="background-color:#ededed;">
+				<center><p><a href="index.html">About Me</a> | <a href="research.html">Research</a> | <a href="curriculum_vitae.pdf">CV</a> | <a href="contact_info.html">Contact Info</a></p></center>
+			 </div>
+		</div>
+		<hr>
 
-		<center><h1>Contact Information</h1></center>
+		<center><u><h1>Contact Information</h1></u></center>
 			
 			<div class="row">
-			  <div class="column" style="background-color:#ededed;">
+			  <div class="column" style="background-color:#ffffff;">
 					<h2>Column 1</h2>
 					<p>
 						<ul>
@@ -52,7 +78,7 @@
 						</ul>
 					</p>
 			 	</div>
-			 	<div class="column" style="background-color:#ededed;">
+			 	<div class="column" style="background-color:#ffffff;">
 					<h2>Column 2</h2>
 					<p>
 						<ul>
@@ -66,44 +92,52 @@
 			 	</div>
 			</div>
 
-			<hr><script type="text/javascript">
-			var tmonth=new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 
-			function GetClock() {
-				var d=new Date();
-				var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
-				if(nyear<1000) {
-					nyear+=1900;
-				}
-				var d=new Date();
-				var nhour=d.getHours(),nmin=d.getMinutes(),ap;
-				if(nhour==0) {
-					ap=" AM";nhour=12;
-				}
-				else if(nhour<12) {
-					ap=" AM";
-				}
-				else if(nhour==12) {
-					ap=" PM";
-				}
-				else if(nhour>12) {
-					ap=" PM";
-					nhour -= 12;
-				}
-				if(nmin<=9) {
-					nmin="0" + nmin;
-				}
+		
+		<script type="text/javascript">
+		var tmonth=new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 
-				document.getElementById('clockbox').innerHTML=""+tmonth[nmonth]+" "+ndate+", "+nyear+" "+nhour+":"+nmin+ap+"";
+		function GetClock() {
+			var d=new Date();
+			var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
+			if(nyear<1000) {
+				nyear+=1900;
+			}
+			var d=new Date();
+			var nhour=d.getHours(),nmin=d.getMinutes(),ap;
+			if(nhour==0) {
+				ap=" AM";nhour=12;
+			}
+			else if(nhour<12) {
+				ap=" AM";
+			}
+			else if(nhour==12) {
+				ap=" PM";
+			}
+			else if(nhour>12) {
+				ap=" PM";
+				nhour -= 12;
+			}
+			if(nmin<=9) {
+				nmin="0" + nmin;
 			}
 
-			window.onload=function() {
-				GetClock();
-				setInterval(GetClock, 1000);
-			}
-			</script>
+			document.getElementById('clockbox').innerHTML=""+tmonth[nmonth]+" "+ndate+", "+nyear+" "+nhour+":"+nmin+ap+"";
+		}
 
-		<div id="clockbox"></div>
+		window.onload=function() {
+			GetClock();
+			setInterval(GetClock, 1000);
+		}
+		</script>
+
+
+		<div class="footer">
+			<hr><center><div class="stripe" style="background-color:#ededed;">
+				<div id="clockbox"></div>
+			</div><hr></center>
+		</div>
+		
 
 	</body>
 </html>
