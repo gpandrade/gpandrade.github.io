@@ -46,24 +46,32 @@
 	.column {
 		 float: left;
 		 padding: 10px;
+	}
+
+	.sidepad{
+		 width: 0%;	
 	}	
 
 	.left{
-	  	 width: 30%;
+	  	 width: 18%;
 	}
 
 	.right {
-	  	 width: 45%;
+	  	 width: 0%;
 	}
 
 	.middle {
-	  	 width: 25%;
+	  	 width: 70%;
 	}
 
 	.affil {
 		 float: left;
 		 width: 33%;
 		 padding: 10px;
+	}
+
+	.full-height {
+	  	 height: 30%;
 	}
 
 	/* Clear floats after the columns */
@@ -93,49 +101,56 @@
 		<hr>
 
 		<div class="row">
+			<div class="column sidepad" style="background-color:#ffffff;">
+			</div>
 		  	<div class="column left" style="background-color:#ffffff;">
 				<center><p><img src="pic_for_website.jpg" alt="picture of me" width="80%" height="80%"></p></center>
 			</div>
 			<div class="column middle" style="background-color:#ffffff;">
+				<div class="row">
 				<h2>Gabriel P. Andrade</h2>
-				<b>Graduate Student</b>
-				<br>
-				<b><a href="https://www.colorado.edu/cs/">Department of Computer Science</a> </b>
-				<br>
-				<b>University of Colorado Boulder</b>
-				<br>
-				<!--<br>
-				<br>
-				<br>
-				<b>Contact Information:</b>-->
-				<p><u>Email</u>: <a href="mailto:gabriel.andrade@colorado.edu">gabriel.andrade@colorado.edu</a>
-				<br>
-				<br>
-				<br>
-				<br>
-				<br>
-				<b>CSCI 3104 Hours:</b>
-				<p>
-				<small>Tuesdays 4:00pm-4:50pm in STAD 140</small>
-				</p>
+				<p><font size=3>I'm a second year Ph.D. student in <a href="https://www.colorado.edu/cs/">computer science</a> at the <a href="https://www.colorado.edu">University of Colorado Boulder</a>. My advisors are Professors <a href="http://www.cs.colorado.edu/~raf/">Rafael Frongillo</a> and <a href="http://www.cs.colorado.edu/~jgrochow/index.html">Joshua Grochow</a>.</font></p>
+				<p><font size=3>Before coming here, I completed an M.S. in applied math at UMass Amherst. My undergraduate degree is also from UMass, where I majored in pure math with a minor in philosophy.</font></p>
+				</div>
+				<div class="row">
+				<p><font size=3><u>Research Interests:</u> <br> Algorithmic Economics, Complex Adaptive Systems, Local-to-global theory, and Distributed Multi-agent Systems</font></p>
+				</div>
+				<div class="row">
+				<p><font size=3><u>Contact</u>: <a href="mailto:gabriel.andrade@colorado.edu">gabriel.andrade@colorado.edu</a></font>
+				</div>
+				<div class="row">
+				<h4>Publications:</h4>
+				<font size=3>
+				<ul style="list-style-type:circle;">
+				 <li> <a href="https://ieeexplore.ieee.org/document/8489419?arnumber=8489419&SID=EBSCO:edseee%2F">Graph Models of Neurodynamics to Support Oscillatory Associative Memories</a>, G. P. Andrade, M. Ruszink&oacute, and R. Kozma.  In the 2018 International Joint Conference on Neural Networks (<a href="http://www.ecomp.poli.br/~wcci2018/">IJCNN 2018</a>) </li>
+				</ul>
+				</div>
+
+				<div class="full-height"></div>
 
 			</div>
 			<div class="column right" style="background-color:#ffffff;">
-				
 			</div>
 		</div>
 		
+		<!--
 		<hr>
 		<div class="row">
-			<div class="stripe" style="background-color:#ffffff;">
-				<h2>About Me</h2>
+			<div class="column sidepad" style="background-color:#ffffff;">
+			</div>
+			<div class="column left" style="background-color:#ffffff;">
+			</div>
+			<div class="column middle" style="background-color:#ffffff;">
+				<h3>Publications:</h3>
 				
 				<font size=3>
 
-				<p>I'm a second year Ph.D. student in computer science at <a href="https://www.colorado.edu/cs/">CU Boulder</a>. My research interests are in algorithmic economics, complex adaptive systems, local-to-global theory, and distributed multi-agent systems. I'm part of the <a href="https://www.colorado.edu/cs-theory/">CS Theory</a> and <a href="https://www.colorado.edu/cs/research/complex-systems">Complex Systems</a> groups here at CU and my advisors are Professors <a href="http://www.cs.colorado.edu/~raf/">Rafael Frongillo</a> and <a href="http://www.cs.colorado.edu/~jgrochow/index.html">Joshua Grochow</a>. Before coming here, I completed an M.S. in applied math and worked with Professor Robert Kozma as part of the <a href="http://binds.cs.umass.edu/">Biologically Inspired Neural and Dynamical Systems Lab</a> at UMass Amherst. During that time, I also worked as a graduate IT assistant in the <a href="https://www.math.umass.edu/">department of mathematics &amp; statistics</a>. My undergraduate degree is also from UMass, where I majored in pure math with a minor in philosophy.</p>
-
+				<p> <a href="https://ieeexplore.ieee.org/document/8489419?arnumber=8489419&SID=EBSCO:edseee%2F">Graph Models of Neurodynamics to Support Oscillatory Associative Memories</a>, G. P. Andrade, M. Ruszink&oacute, and R. Kozma.  In the 2018 International Joint Conference on Neural Networks (<a href="http://www.ecomp.poli.br/~wcci2018/">IJCNN 2018</a>)</p>
+			</div>
+			<div class="column right" style="background-color:#ffffff;">
 			</div>
 		</div>
+		`-->
 
 		<!-- Re-add if I have more affiliations with logos in the future...
 		<hr>
@@ -192,7 +207,7 @@
 		</script>
 
 
-		<div class="footer">
+		<div id="footer">
 			<hr><center><div class="stripe" style="background-color:#ededed;">
 				<div id="clockbox"></div>
 			</div><br><hr></center>
