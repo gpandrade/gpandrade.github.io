@@ -180,9 +180,9 @@
 
 - id: matroid-sperner
   title: A Matroid Generalization of Sperner's Lemma
-  authors: [Gabriel Passamani Andrade, Andrés Rodríguez Rey, Alberto J. Ruiz Sandoval]   # as on the title page; Su and Sondjaja are thanked as supervisors
+  authors: [Gabriel Passamani Andrade, Andrés Rodríguez Rey, Alberto J. Ruiz Sandoval]   # as on the title page; supervisors credited in the venue
   year: 2015
-  venue: MSRI-UP 2015 research report, Geometric Combinatorics Motivated by the Social Sciences
+  venue: MSRI-UP 2015 research report (Geometric Combinatorics Motivated by the Social Sciences); advised by Duane Cooper, Francis Edward Su, and Mutiara Sondjaja
   pdf: /MSRIREUPaperZ.pdf
   links:
     - { label: MSRI-UP, url: https://www.slmath.org/msri-up/765 }

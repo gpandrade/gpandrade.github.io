@@ -3,7 +3,7 @@
   --bg: #f8f8f6;
   --ink: #1b1f2a;
   --ink-2: #5b6170;
-  --accent: #b23e1b; /* sampled from the Lorenz loop: median trajectory hue 14°, darkened to 5.5:1 on --bg */
+  --accent: #6b5d8c; /* smoky violet, hue 258°; 5.5:1 on --bg, so it can carry text as well as underlines */
   --rule: #e2e2dd;
   color-scheme: light dark;
 }
@@ -12,7 +12,7 @@
     --bg: #121418;
     --ink: #e8e6e1;
     --ink-2: #a2a6ae;
-    --accent: #eb886a; /* same hue, lightened to 7.3:1 on dark --bg */
+    --accent: #a89bc8; /* same family, 7.2:1 on dark --bg */
     --rule: #262a31;
   }
 }
@@ -99,14 +99,14 @@ a:hover {
   z-index: 1;
 }
 
-/* Variant: accent underlines at rest on link rows; paper titles underline only on hover. */
-[data-links='accent'] .links a {
+/* Link rows carry the accent as their underline; text stays ink. Paper titles underline on hover only. */
+.links a {
   text-decoration-color: var(--accent);
 }
-[data-links='accent'] .paper .title a {
+.paper .title a {
   text-decoration: none;
 }
-[data-links='accent'] .paper .title a:hover {
+.paper .title a:hover {
   text-decoration: underline;
   text-decoration-color: var(--accent);
 }
@@ -123,7 +123,9 @@ a:hover {
   }
 }
 
-/* Header: photo, then name, identity line, links row. Mobile stacks them; two variants from 720px. */
+/* Header: photo, then name block (name, identity line, links row). Nothing crosses the column edges.
+   Under 720px the photo (120px) stacks above the name; from 720px it sits flush right at 160px,
+   top aligned with the cap height of the name, and the name block takes the remaining width. */
 .masthead {
   display: grid;
   gap: 1.25rem 2rem;
@@ -141,49 +143,31 @@ a:hover {
     box-shadow: 0 0 0 1px var(--rule);
   }
 }
-/* The identity line is one line at 1280px: 579px at meta size against the room each variant leaves. */
 .identity {
   margin-top: 0.5rem;
-  font-size: 0.9375rem;
   color: var(--ink-2);
+  max-width: 68ch;
+}
+.identity.short {
+  font-size: 0.9375rem;
 }
 .masthead .links {
   margin-top: 1rem;
 }
-/* Variant A: 160px photo at the left edge of the column, name block to its right. */
 @media (min-width: 720px) {
-  [data-header='a'] .masthead {
-    grid-template-columns: 160px 1fr;
+  .masthead {
+    grid-template-columns: 1fr 160px;
   }
-  [data-header='a'] .masthead .headshot {
+  .masthead .headshot {
     width: 160px;
     height: 160px;
-  }
-}
-/* Variant B: 200px photo on the right, top aligned with the name; hangs into the margin from 1024px. */
-@media (min-width: 720px) {
-  [data-header='b'] .masthead {
-    grid-template-columns: 1fr 200px;
-  }
-  [data-header='b'] .masthead .headshot {
-    width: 200px;
-    height: 200px;
     grid-column: 2;
     grid-row: 1;
-    margin-top: 0.35rem;
+    margin-top: 3px; /* measured: puts the photo's top edge on the cap height of the name */
   }
-  [data-header='b'] .masthead .nameblock {
+  .masthead .nameblock {
     grid-column: 1;
     grid-row: 1;
-  }
-}
-/* From 1024px the photo hangs into the margin so the name block has 592px for the identity line. */
-@media (min-width: 1024px) {
-  [data-header='a'] .masthead {
-    margin-left: -7rem;
-  }
-  [data-header='b'] .masthead {
-    margin-right: -9.5rem;
   }
 }
 main > section:first-child h2 {

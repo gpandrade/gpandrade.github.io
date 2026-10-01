@@ -67,7 +67,7 @@ const jsonLd = {
     <meta name="twitter:image" content={ogImage} />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)}></script>
   </head>
-  <body data-header={site.headerVariant} data-links={site.accentLinks ? 'accent' : undefined}>
+  <body>
     <a class="skip" href="#main">Skip to content</a>
     <div class="wrap">
       <slot />
