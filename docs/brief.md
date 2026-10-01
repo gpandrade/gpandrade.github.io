@@ -1,6 +1,6 @@
 # gpandrade.github.io — rebuild brief
 
-Owner: Gabriel P. Andrade (Gab). Executor: Claude Code. Written 2026-09-30; amended 2026-10-01 with Gab's §14 answers.
+Owner: Gabriel P. Andrade (Gab). Executor: Claude Code. Written 2026-09-30; amended 2026-10-01 with Gab's §14 answers and the design-review decisions (§15).
 
 ## 0. What this is
 
@@ -9,7 +9,7 @@ Rebuild the personal site at https://gpandrade.github.io (repo `gpandrade/gpandr
 1. **It stops going stale.** Adding a paper, talk, or news item is a YAML edit, doable in the GitHub web editor with no local tooling. A scheduled job later proposes additions automatically (Phase 2).
 2. **It looks made on purpose.** Quiet, typographic, fast. The site is linked from the Gensyn site and from X, so link previews and mobile first-load matter as much as the desktop view.
 
-Decisions already made (don't re-litigate): Astro; keep both PhD dynamics videos, compressed; the Writing section links out (no hosted blog).
+Decisions already made (don't re-litigate): Astro; keep both PhD dynamics videos, compressed; the Writing section links out (no hosted blog). Design-review decisions of 2026-10-01 are in §15 and already folded in below.
 
 Rules for the executor:
 
@@ -32,11 +32,12 @@ Rules for the executor:
 
 Single page at `/`. Sections in this order; a section renders only if its data file is non-empty. There is no News section and no Talks section (§14 Q6, Q7).
 
-1. **Header**: name, role line, headshot, bio (two short paragraphs), links row.
-2. **Papers**: peer-reviewed papers and preprints, newest first, grouped by year with the year in a left gutter. The two dynamics videos live inside the COLT 2021 entry, since that paper is where they come from.
-3. **Earlier work**: the 2015 and 2017 write-ups, in a smaller register.
-4. **Writing**: links out to posts elsewhere, newest first. The section ends with one line pointing to the Gensyn research page (https://www.gensyn.ai/research) for the rest.
-5. **Footer**: name, "Source on GitHub". No date stamp.
+1. **Header**: headshot; name block of name, identity line, links row.
+2. **About**: the bio (two short paragraphs) under a heading styled like the other section headings.
+3. **Papers**: peer-reviewed papers and preprints, newest first, grouped by year with the year in a left gutter. The two dynamics videos live inside the COLT 2021 entry, since that paper is where they come from.
+4. **Earlier work**: the 2015 and 2017 write-ups, in a smaller register.
+5. **Writing**: links out to posts elsewhere, newest first. The section ends with one line pointing to the Gensyn research page (https://www.gensyn.ai/research) for the rest.
+6. **Footer**: name, "Source on GitHub". No date stamp.
 
 The index shows every paper, grouped by year, newest first within a year (entries within a year render in file order, so new entries go at the top of their year). Keep the `selected` field in the schema but don't use it; there is no `/papers` page.
 
@@ -53,14 +54,15 @@ Audience is mixed: EC/COLT academics, DeFi and crypto people, potential collabor
 --bg               #F8F8F6    #121418
 --ink              #1B1F2A    #E8E6E1
 --ink-2            #5B6170    #A2A6AE
---accent           sampled from the dominant trajectory colour in the Lorenz
-                   video (extract a frame, pick it) so site and videos share a
-                   palette; if the video is default-matplotlib blue/orange,
-                   use #285C8F light / #8FB4DA dark
+--accent           #6B5D8C    #A89BC8   a dull, smoky violet leaning blue (the
+                   Gengar/Gastly/Haunter family), chosen in review over the
+                   red-orange sampled from the loops; ≥ 4.5:1 on --bg in both
+                   schemes. Alternates if wanted: bluer #655D8B/#A49DC8,
+                   greyer #6D6581/#ADA5C0. Flat colour only, no gradients.
 --rule             #E2E2DD    #262A31
 ```
 
-Dark mode: `prefers-color-scheme`, no toggle. Body gets an explicit background.
+Dark mode: `prefers-color-scheme`, no toggle. Body gets an explicit background. In dark mode the headshot is dimmed (brightness 0.85, saturate 0.9) and seated on a 1px `--rule` so it doesn't float as a bright block.
 
 ### Type
 
@@ -69,11 +71,12 @@ One family: **Newsreader** (variable, with optical size), self-hosted via `@font
 Scale, 17px base:
 
 - Name (h1): 2.25rem, weight 500, letter-spacing −0.01em, opsz at the high end.
+- Identity line (under the name): "Researcher working on information markets, mechanism design, and multi-agent systems." Body size, `--ink-2`, may wrap to two lines beside the photo. No affiliation in it; the bio carries that.
 - Section headings (h2): 1.25rem, weight 500, sentence case, generous space above (≈ 3rem), little below.
 - Body: 1.0625rem / 1.55, `--ink`, measure ≤ 68ch.
 - Meta (authors, venue, dates, captions, link rows): 0.9375rem, `--ink-2`.
 - Paper titles: body size, weight 600, `--ink`; the title is the link.
-- Gab's own name in author lists: weight 600 in `--ink`. This is the one emphasis device; it encodes which author is him.
+- Gab's own name in author lists: weight 600 in `--ink`, always rendered as "Gabriel P. Andrade" wherever `authorMatch` hits, while the YAML keeps the arXiv spelling. This is the one emphasis device; it encodes which author is him.
 - Year gutter: `font-variant-numeric: tabular-nums`.
 
 ### Layout
@@ -81,14 +84,14 @@ Scale, 17px base:
 Left-aligned, ragged right. Content column `max-width: 42rem`, page padding 1.25rem, top margin 4rem desktop / 2rem mobile. At ≥ 720px the papers and writing lists use a two-column grid, `4.5rem 1fr`, with the year (or date) in the gutter, shown once per year group. Below 720px the gutter collapses to a line above the group.
 
 ```
-Gabriel P. Andrade                                     [headshot 112px]
-Researcher at Gensyn, working on information markets
-and the mechanisms behind them.
+Gabriel P. Andrade                              [headshot 160px,
+Researcher working on information markets,       flush with the
+mechanism design, and multi-agent systems.       column's right edge,
+Email   Google Scholar   X   GitHub   LinkedIn   top on the cap height]
 
+About
 Bio paragraph one.
 Bio paragraph two.
-
-Email   Google Scholar   X   GitHub   LinkedIn
 
 Papers
 2026       Evidence Markets
@@ -121,7 +124,7 @@ Writing
 Gabriel P. Andrade   Source on GitHub
 ```
 
-Headshot: 112px square, 2px radius (not a circle), top-right of the header at ≥ 560px; above the name on smaller screens.
+Headshot: square, 4px radius (not a circle). From 720px, 160px inside the column, flush with its right edge, top edge on the cap height of the name (measured, not eyeballed); the name block takes the remaining width and nothing crosses the column edges at any width. Under 720px, 120px above the name, left-aligned.
 
 Videos: two-up `<figure>` inside the COLT 2021 entry, each ~50% width on desktop, stacked on mobile, native aspect ratio, `figcaption` in meta style. Markup in §6.
 
@@ -129,8 +132,8 @@ Videos: two-up `<figure>` inside the COLT 2021 entry, each ~50% width on desktop
 
 - Type does the work. No cards, shadows, gradients, icons, badges, or borders around content. Whitespace separates sections; one hairline rule above the footer only.
 - Every structural device carries information: the year gutter, the bold self-name, the caption. Nothing decorative.
-- One moving thing on the page: the two loops. No entrance animations, no hover transitions beyond underline. Under `prefers-reduced-motion: reduce`, videos don't autoplay; the poster shows with controls.
-- Links are underlined text, sentence case, plain labels ("Blog post", "Slides"). Link groups are separated by spacing, not punctuation.
+- Moving things on the page: the two loops, and the background texture (§3 Texture), which is the one decorative element and must never compete with the loops. No entrance animations, no hover transitions beyond underline. Under `prefers-reduced-motion: reduce`, videos don't autoplay (the poster shows with controls) and the texture holds a static frame.
+- Links are underlined text, sentence case, plain labels ("Blog post", "Slides"). Link rows (header links, per-paper links) underline in the accent at rest with the text staying ink; paper titles underline only on hover; body links underline in a faded ink. Link groups are separated by spacing, not punctuation.
 - Nothing on the page is time-bound except the dates on Writing entries, so the page doesn't read as wrong when it's a year old.
 
 ### Don't
@@ -142,11 +145,20 @@ These are the tells of a templated page; none of them here:
 - A near-black (#0B0B0B/#111) standing in for black; warm cream + terracotta; near-black + acid green.
 - Monospace for small labels or data.
 - Circular avatar, social-icon sprite, "Get in touch" button, hero stats.
-- Tailwind, component kits, client-side JS (Astro ships none by default; keep it that way).
+- Tailwind, component kits, client-side JS, with exactly two exemptions: the reduced-motion toggle for the videos (a few lines inline) and the texture layer (§3 Texture, ≤ 15 KB inline SVG plus JS).
+
+### Texture
+
+A full-viewport fixed layer behind the content: an original geometric tessellation (not a reproduction of any Escher work) drawn as hairline strokes, about 4% contrast against `--bg` in light mode and 6% in dark. Invisible at a glance, visible once you look.
+
+- It evolves with scroll and never repeats: the tiling is parameterised by t = scrollY / scrollable height and its vertices are displaced by a smooth non-periodic field that advances with t. The field is game dynamics: the replicator vector field of a rock–paper–scissors game, sampled at a point that drifts along a Lorenz trajectory, so the texture is literally learning dynamics. (Fallback if ever needed: a sum of incommensurate sinusoids.)
+- Implementation: a trihexagonal (kagome) lattice of three line families, `src/lib/texture.ts` shared by the build-time static frame and the client script in `Texture.astro`.
+- Budget: under 15 KB of inline SVG plus JS, no library, at most a few hundred shapes, updates on requestAnimationFrame only. Without JS, or under prefers-reduced-motion, a static frame. Not in the OG image.
+- Behind `site.texture`. If it hurts readability, Lighthouse, or scroll smoothness on a phone, ship with it off. If it competes with the video loops, dial the texture down, not the videos.
 
 ## 4. Stack and repo layout
 
-Astro 5 (content layer, `file()` loaders), TypeScript strict, no integrations beyond `@astrojs/sitemap`. Node LTS.
+Astro 7 (content layer, `file()` loaders; the brief said 5, 7 was current at build time), TypeScript strict, no integrations beyond `@astrojs/sitemap`. Node 24 LTS.
 
 ```
 .
@@ -159,12 +171,13 @@ Astro 5 (content layer, `file()` loaders), TypeScript strict, no integrations be
 │   ├── media/                  lorenz.{webm,mp4,jpg}  chua.{webm,mp4,jpg}
 │   ├── og.png  favicon.svg  robots.txt
 ├── src/
-│   ├── site.ts                 name, role, jobTitle, description, email, links row, authorMatch
+│   ├── site.ts                 name, identity line, role (OG), jobTitle, description, email, links row, authorMatch, bio, flags
 │   ├── data/                   papers.yaml  writing.yaml  sources.yaml (Phase 2 config, §10)
 │   ├── content.config.ts       file() loaders + zod schemas
 │   ├── assets/headshot.png     dssi_portrait.png, moved
 │   ├── styles/global.css       tokens, type scale, layout
-│   ├── components/             Paper.astro  VideoLoop.astro  LinkList.astro  DatedList.astro
+│   ├── components/             Paper.astro  VideoLoop.astro  LinkList.astro  DatedList.astro  Texture.astro
+│   ├── lib/                    texture.ts (shared texture math)  jpegSize.ts  inline.ts
 │   ├── layouts/Base.astro      head/meta, fonts, skip link, footer
 │   └── pages/index.astro
 ├── scripts/                    Phase 2 only
@@ -255,7 +268,11 @@ ffmpeg -y -i lorenz_game.mp4 -ss START -t 12 -an \
 ffmpeg -y -i public/media/lorenz.mp4 -ss 2 -frames:v 1 -q:v 3 public/media/lorenz.jpg
 ```
 
-Targets: ≤ 2 MB per file. If over, raise CRF by 2, then drop width to 640. Sample `--accent` from the resulting frame (§3).
+Targets: ≤ 2 MB per file. If over, raise CRF by 2, then drop width to 640.
+
+Chosen in the build: Lorenz 120–132 s, Chua 45–57 s; no plot chrome in either, but 30–50% of each frame was empty, so each segment is cropped to its trajectories' bounding box plus margin, at 4:3 (`crop=1136:852:353:136` and `crop=1420:1064:112:50`), then scaled to 720 wide.
+
+Colour: the trajectories are red-orange on white and the accent is violet, so `site.videoFilter` picks a treatment: `hue` (default) applies `hue-rotate(251deg) saturate(0.9)` in both schemes, which lands the dominant trajectory hue on the accent's 258° (angles measured, not nominal); `none` leaves the source colours; `invert` is hue-matched in light and `invert(1) hue-rotate(40deg)` in dark for a dark field. In dark mode the white frame sits on a 1px `--rule`.
 
 Markup (`VideoLoop.astro`):
 
@@ -266,12 +283,12 @@ Markup (`VideoLoop.astro`):
 </video>
 ```
 
-Under `prefers-reduced-motion: reduce`, render without `autoplay` and with `controls`. Always set width/height to avoid layout shift.
+Under `prefers-reduced-motion: reduce`, a short inline script before `</body>` removes `autoplay`, pauses, and adds `controls` (a static page cannot read the preference any other way). Width/height come from the poster's JPEG header at build time, so there is no layout shift.
 
 ### Images
 
-- Headshot: `dssi_portrait.png` (§14 Q3). Place in `src/assets/headshot.png`; render with Astro `<Image>` at `width={224}` (2× of 112px), `alt="Gabriel P. Andrade"`.
-- `og.png`: 1200×630, site palette, name + role line + headshot. Make it once by any means (an HTML page screenshotted at that size is fine); commit the PNG; don't add a screenshot dependency to the build.
+- Headshot: `dssi_portrait.png` (§14 Q3), 220×275, kept as is. Place in `src/assets/headshot.png`; render with Astro `<Image>` as a 220×220 crop shown at 160px (120px on mobile), `alt="Gabriel P. Andrade"`. Softness on retina screens is accepted; never upscale.
+- `og.png`: 1200×630, site palette, name + role line + headshot at 220px (no upscaling), the site URL in the accent, no texture. Made once by screenshotting an HTML card with Playwright (`scratchpad`, not a build dependency); the PNG is committed.
 - `favicon.svg`: a monogram in the accent colour. Keep it under 1 KB.
 
 ### PDFs
@@ -281,7 +298,7 @@ No PDF processing. The two kept PDFs are copied into `public/` unchanged; the se
 ## 7. Deploy
 
 1. The default branch is `master`; the workflow triggers on it.
-2. Add `.github/workflows/deploy.yml` (below; check for newer major versions of the three actions before committing).
+2. Add `.github/workflows/deploy.yml` (below; versions checked 2026-10-01: checkout v7, withastro/action v6 on Node 24, deploy-pages v5).
 3. **Gab, in the browser**: repo Settings → Pages → Build and deployment → Source: **GitHub Actions**. Until this is flipped, Pages keeps serving the old branch build.
 4. Push. Confirm the deploy job's URL loads, the two kept PDF URLs still resolve, and the workflow is the only thing building the site.
 5. Local dev: `npm install`, `npm run dev`. `npm run build` must pass before any push that touches templates.
@@ -300,8 +317,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: withastro/action@v3
+      - uses: actions/checkout@v7
+      - uses: withastro/action@v6
+        with:
+          node-version: 24
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -310,7 +329,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 ```
 
 `astro.config.mjs`: `site: 'https://gpandrade.github.io'`, no `base` (user site, served at root).
@@ -327,7 +346,11 @@ jobs:
 
 Gab edits these to taste. Author full names for arXiv entries should be pulled from the arXiv API (one batched `id_list` query) rather than trusted from below; the co-author names below are best-effort.
 
-### Role line
+### Identity line (under the name)
+
+Researcher working on information markets, mechanism design, and multi-agent systems.
+
+### Role line (OG image and JSON-LD only)
 
 Researcher at Gensyn, working on information markets and the mechanisms behind them.
 
@@ -335,7 +358,7 @@ Title is "Researcher" here and on the Gensyn team page (Gab updates the team pag
 
 ### Bio
 
-I'm a researcher at [Gensyn](https://www.gensyn.ai/research), where I work on information markets: mechanisms that pay people and models to reveal what they know, and the multi-agent systems that take shape once many strategic participants trade on the result. Most of my work sits where mechanism design, information elicitation, and multi-agent learning meet.
+I work at [Gensyn](https://www.gensyn.ai/research) on information markets: mechanisms that pay people and models to reveal what they know, and the multi-agent systems that take shape once many strategic participants trade on the result. Most of my work sits where mechanism design, information elicitation, and multi-agent learning meet.
 
 Before Gensyn I was an Applied Scientist at Amazon, working on fraud and bad-actor detection. I received my PhD in computer science from the University of Colorado Boulder in 2022, advised by Rafael Frongillo and Joshua Grochow, where I studied the dynamics of learning in games. Before that I did an MS in applied mathematics at UMass Amherst.
 
@@ -398,7 +421,7 @@ Rate limits are not a concern at this volume: arXiv asks for ≥ 3 s between req
 
 - `npm run build` passes; Actions deploys to https://gpandrade.github.io; the two kept PDF URLs resolve.
 - Adding a paper means editing `src/data/papers.yaml` and nothing else; a malformed entry fails the build with a readable error.
-- First-load transfer under 1 MB excluding videos; each video file ≤ 2 MB, `preload="metadata"`; no client-side JS shipped.
+- First-load transfer under 1 MB excluding videos; each video file ≤ 2 MB, `preload="metadata"`; no client-side JS beyond the reduced-motion toggle and the texture layer (together under 15 KB).
 - Lighthouse (mobile): Performance ≥ 95, Accessibility 100, Best Practices 100, SEO 100.
 - Link preview validates (any OG debugger) with the og.png; `<title>` and description correct.
 - Dark mode renders; reduced motion respected; keyboard focus visible; headings in order; body never scrolls sideways at 360px.
@@ -420,7 +443,8 @@ Personal site. Astro 5, no client JS, deployed by .github/workflows/deploy.yml t
 ## Rules
 - Never rename or remove files under public/ that predate the rebuild; they are linked externally.
 - No media over 3 MB, except the archive copies in media-src/, which are never deployed. Videos: webm + mp4 + poster, muted loop (docs/brief.md §6).
-- One typeface (Newsreader), sentence case, no icons, cards, shadows, gradients, or client-side JS.
+- One typeface (Newsreader), sentence case, no icons, cards, shadows, gradients. No client-side JS beyond the two exemptions in docs/brief.md §3 (reduced-motion toggle, texture layer).
+- Flags in src/site.ts: `texture` (background layer on/off) and `videoFilter` (`hue` | `none` | `invert`).
 - Run `npm run build` before pushing template changes.
 ```
 
@@ -443,3 +467,13 @@ Asked in one batch at the start of Phase 1. Gab's answers, folded into the secti
 
 Follow-up decisions after the repo audit (2026-10-01): delete all 15 legacy files; headshot moves with no copy at the old URL; source videos kept in `media-src/`; the papers list shows everything (no `selected` cut-off, no `/papers`); six entries added (see §9); `matroid-sperner` venue fixed.
 
+## 15. Design review decisions (2026-10-01)
+
+Taken from screenshots at 1280px and 390px, light and dark, in three rounds:
+
+1. Header variant C (over A, photo left with margin hang, and B, photo right with margin hang): nothing crosses the column edges; name block left on the column; 160px photo flush right, top on the cap height; identity line as the full sentence at body size (C1, over the shortened one-line C2).
+2. Accent: smoky violet #6B5D8C / #A89BC8 replaces the sampled red-orange; accent underlines at rest on link rows; two alternates recorded in §3.
+3. Videos: hue-matched filter is the default, the unfiltered and inverted treatments stay behind `site.videoFilter` for review.
+4. Texture: shipped on if it meets the §3 budget; on/off pair in the PR screenshot set.
+5. Reduced motion: inline script, one render per video.
+6. Headshot kept as is; MSRI authors as on the title page with supervisors credited in the venue; HDEE venue from the ICLR page.

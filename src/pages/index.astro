@@ -34,7 +34,7 @@ const writing = (await getCollection('writing'))
     <Image class="headshot" src={headshot} alt={site.name} width={220} height={220} loading="eager" />
     <div class="nameblock">
       <h1>{site.name}</h1>
-      <p class:list={['identity', { short: site.identityShort }]}><span>{site.identity}</span></p>
+      <p class="identity">{site.identity}</p>
       <LinkList links={site.links} class="meta" ariaLabel="Profiles and contact" />
     </div>
   </header>

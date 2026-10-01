@@ -2,12 +2,8 @@
 export const site = {
   name: 'Gabriel P. Andrade',
   role: 'Researcher at Gensyn, working on information markets and the mechanisms behind them.',
-  /** Under the name. No affiliation; the bio carries that. Full sentence (C1) or the short form (C2). */
-  identity:
-    import.meta.env.PUBLIC_IDENTITY === 'short'
-      ? 'Researcher: information markets, mechanism design, multi-agent systems.'
-      : 'Researcher working on information markets, mechanism design, and multi-agent systems.',
-  identityShort: import.meta.env.PUBLIC_IDENTITY === 'short',
+  /** One sentence under the name. No affiliation; the bio carries that. */
+  identity: 'Researcher working on information markets, mechanism design, and multi-agent systems.',
   jobTitle: 'Researcher',
   affiliation: { name: 'Gensyn', url: 'https://www.gensyn.ai/' },
   teamPage: 'https://www.gensyn.ai/team/gabriel-andrade',
@@ -32,4 +28,7 @@ export const site = {
     'I work at [Gensyn](https://www.gensyn.ai/research) on information markets: mechanisms that pay people and models to reveal what they know, and the multi-agent systems that take shape once many strategic participants trade on the result. Most of my work sits where mechanism design, information elicitation, and multi-agent learning meet.',
     'Before Gensyn I was an Applied Scientist at Amazon, working on fraud and bad-actor detection. I received my PhD in computer science from the University of Colorado Boulder in 2022, advised by Rafael Frongillo and Joshua Grochow, where I studied the dynamics of learning in games. Before that I did an MS in applied mathematics at UMass Amherst.',
   ],
+  /** Treatment of the video loops. 'hue' re-colours the red-orange trajectories onto the accent hue in both
+   *  schemes; 'none' leaves them; 'invert' is hue-matched in light and inverted to a dark field in dark mode. */
+  videoFilter: ((import.meta.env.PUBLIC_VIDEO_FILTER as string | undefined) ?? 'hue') as 'hue' | 'none' | 'invert',
 } as const;
