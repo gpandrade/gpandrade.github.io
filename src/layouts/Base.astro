@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import newsreader from '@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url';
 import { site } from '../site';
+import Texture from '../components/Texture.astro';
 
 interface Props {
   title?: string;
@@ -68,6 +69,7 @@ const jsonLd = {
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)}></script>
   </head>
   <body data-video={site.videoFilter}>
+    {site.texture && <Texture />}
     <a class="skip" href="#main">Skip to content</a>
     <div class="wrap">
       <slot />

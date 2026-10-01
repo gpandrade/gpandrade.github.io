@@ -255,6 +255,26 @@ main > section:first-child h2 {
   margin-top: 0.4rem;
 }
 
+/* Texture: fixed behind everything, hairline strokes a few percent from the background. */
+.texture {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--ink) 5%, var(--bg));
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+@media (prefers-color-scheme: dark) {
+  .texture {
+    color: color-mix(in srgb, var(--ink) 7%, var(--bg));
+  }
+}
+
 /* Writing */
 .dated > li + li {
   margin-top: 0.75rem;

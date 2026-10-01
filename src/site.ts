@@ -31,4 +31,6 @@ export const site = {
   /** Treatment of the video loops. 'hue' re-colours the red-orange trajectories onto the accent hue in both
    *  schemes; 'none' leaves them; 'invert' is hue-matched in light and inverted to a dark field in dark mode. */
   videoFilter: ((import.meta.env.PUBLIC_VIDEO_FILTER as string | undefined) ?? 'hue') as 'hue' | 'none' | 'invert',
+  /** The one decorative element: a faint tessellation behind the page, warped by learning dynamics as you scroll. */
+  texture: import.meta.env.PUBLIC_TEXTURE !== 'off',
 } as const;
