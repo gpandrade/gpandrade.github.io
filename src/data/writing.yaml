@@ -1,0 +1,26 @@
+# Posts elsewhere, newest first. Schema: src/content.config.ts.
+- id: credibly-neutral-ai-oracles
+  date: 2026-07
+  title: Credibly Neutral AI Oracles
+  outlet: Gensyn research
+  url: https://www.gensyn.ai/research/credibly-neutral-ai-oracles
+- id: markets-that-explain-themselves
+  date: 2026-06
+  title: Markets That Explain Themselves
+  outlet: Gensyn research
+  url: https://www.gensyn.ai/research/markets-that-explain-themselves
+- id: prediction-markets-we-were-promised
+  date: 2026-01
+  title: "The Prediction Markets We Were Promised: A Guide to Slaying Dragons With Oracles, Commitments, and Blockchains"
+  outlet: Gensyn guides
+  url: https://www.gensyn.ai/guides/a-guide-to-slaying-dragons-with-oracles-commitments-and-blockchains
+- id: lmsr-guide
+  date: 2025-12
+  title: LMSR (Logarithmic Market Scoring Rule)
+  outlet: Gensyn guides
+  url: https://www.gensyn.ai/guides/lmsr-logarithmic-market-scoring-rule
+- id: prediction-markets-are-learning-algorithms
+  date: 2025-12
+  title: Prediction Markets are Learning Algorithms
+  outlet: Gensyn research
+  url: https://www.gensyn.ai/research/prediction-markets-are-learning-algorithms

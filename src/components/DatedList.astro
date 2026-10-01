@@ -1,0 +1,16 @@
+---
+/** Dated entries with the date in the left gutter: used for Writing. */
+interface Props {
+  items: ReadonlyArray<{ date: string; title: string; url: string; outlet: string }>;
+}
+const { items } = Astro.props;
+const shown = (d: string) => d.slice(0, 7); // YYYY-MM in the gutter
+---
+<ul class="dated">
+  {items.map((it) => (
+    <li>
+      <span class="date meta">{shown(it.date)}</span>
+      <p class="entry"><a href={it.url}>{it.title}</a><span class="meta">{it.outlet}</span></p>
+    </li>
+  ))}
+</ul>

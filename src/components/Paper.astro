@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { site } from '../site';
+import LinkList from './LinkList.astro';
+import VideoLoop from './VideoLoop.astro';
+
+interface Props {
+  paper: CollectionEntry<'papers'>;
+}
+const { paper } = Astro.props;
+const p = paper.data;
+
+// Link order: arXiv, PDF, Publisher, then the entry's own links. The title points at the first.
+const links: { label: string; url: string }[] = [];
+if (p.arxiv) links.push({ label: 'arXiv', url: `https://arxiv.org/abs/${p.arxiv}` });
+if (p.pdf) links.push({ label: 'PDF', url: p.pdf });
+if (p.doi) links.push({ label: 'Publisher', url: `https://doi.org/${p.doi}` });
+links.push(...p.links);
+const primary = links[0]!.url;
+const earlier = p.group === 'earlier';
+---
+<article class:list={['paper', { earlier }]} id={paper.id}>
+  <h3 class="title"><a href={primary}>{p.title}</a></h3>
+  <p class="meta authors">
+    {p.authors.map((a, i) => (
+      <>{i > 0 && ', '}{site.authorMatch.test(a) ? <strong>{a}</strong> : a}</>
+    ))}
+  </p>
+  <p class="meta venue">{p.venue}</p>
+  {p.summary && <p class="summary">{p.summary}</p>}
+  <LinkList links={links} class="meta" ariaLabel={`Links for ${p.title}`} />
+  {p.media.length > 0 && (
+    <div class="media">
+      {p.media.map((m) => <VideoLoop src={m.src} caption={m.caption} />)}
+    </div>
+  )}
+</article>
