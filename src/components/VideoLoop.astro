@@ -2,9 +2,8 @@
 import { jpegSize } from '../lib/jpegSize';
 
 /**
- * A muted, looping video with a poster. Two variants are rendered and CSS picks one:
- * the autoplaying loop normally, or a poster with controls under prefers-reduced-motion.
- * No client JS is involved; a static page cannot read the motion preference any other way.
+ * A muted, looping video with a poster. Under prefers-reduced-motion a short inline script in the
+ * layout removes autoplay and adds controls, so the poster shows and the loop plays only on request.
  */
 interface Props {
   src: string; // "/media/lorenz" -> lorenz.webm, lorenz.mp4, lorenz.jpg
@@ -15,17 +14,9 @@ const size = jpegSize(`public${src}.jpg`) ?? { width: 720, height: 540 };
 const poster = `${src}.jpg`;
 ---
 <figure class="loop">
-  <div class="motion">
-    <video autoplay muted loop playsinline preload="metadata" poster={poster} width={size.width} height={size.height} aria-label={caption}>
-      <source src={`${src}.webm`} type="video/webm" />
-      <source src={`${src}.mp4`} type="video/mp4" />
-    </video>
-  </div>
-  <div class="still">
-    <video controls muted loop playsinline preload="none" poster={poster} width={size.width} height={size.height} aria-label={caption}>
-      <source src={`${src}.webm`} type="video/webm" />
-      <source src={`${src}.mp4`} type="video/mp4" />
-    </video>
-  </div>
+  <video autoplay muted loop playsinline preload="metadata" poster={poster} width={size.width} height={size.height} aria-label={caption}>
+    <source src={`${src}.webm`} type="video/webm" />
+    <source src={`${src}.mp4`} type="video/mp4" />
+  </video>
   <figcaption class="meta">{caption}</figcaption>
 </figure>

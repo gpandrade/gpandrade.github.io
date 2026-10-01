@@ -83,7 +83,7 @@
   authors: [Oğuzhan Ersoy, Jari Kolehmainen, Gabriel Passamani Andrade]
   year: 2025
   date: 2025-02
-  venue: arXiv preprint
+  venue: Modular, Collaborative and Decentralized Deep Learning workshop, ICLR 2025
   arxiv: "2502.19385"
   links:
     - { label: Blog post, url: https://www.gensyn.ai/research/diverse-expert-ensembles-embarrassingly-parallel-llms-from-diverse-experts }
@@ -172,7 +172,7 @@
 
 - id: breast-cancer-math-systems
   title: Math Systems for Diagnosis and Treatment of Breast Cancer
-  authors: [C. Amorin, G. P. Andrade, S. Castro-Pearson, A. K. Geraldo, B. Iles, D. Katsaros, T. Mullen, S. Nguyen, O. Spiro, M. Sych]
+  authors: [Connor Amorin, Gabriel P. Andrade, Sandra Castro-Pearson, Abdel Kader Geraldo, Brandon Iles, Dean Katsaros, Terry Mullen, Sam Nguyen, Oliver Spiro, Melissa Sych]
   year: 2017
   venue: UMass Amherst Department of Mathematics & Statistics Newsletter
   pdf: /seminaryear1_deptnewsletter.pdf
@@ -180,7 +180,7 @@
 
 - id: matroid-sperner
   title: A Matroid Generalization of Sperner's Lemma
-  authors: [G. P. Andrade, A. R. Rey, A. J. R. Sandoval, M. Sondjaja, F. Su]
+  authors: [Gabriel Passamani Andrade, Andrés Rodríguez Rey, Alberto J. Ruiz Sandoval]   # as on the title page; Su and Sondjaja are thanked as supervisors
   year: 2015
   venue: MSRI-UP 2015 research report, Geometric Combinatorics Motivated by the Social Sciences
   pdf: /MSRIREUPaperZ.pdf

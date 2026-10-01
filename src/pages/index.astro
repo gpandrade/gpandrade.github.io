@@ -32,17 +32,21 @@ const writing = (await getCollection('writing'))
 <Base>
   <header class="masthead">
     <Image class="headshot" src={headshot} alt={site.name} width={220} height={220} loading="eager" />
-    <div class="intro">
+    <div class="nameblock">
       <h1>{site.name}</h1>
-      <p class="role">{site.role}</p>
+      <p class="identity"><span>{site.identity}</span></p>
+      <LinkList links={site.links} class="meta" ariaLabel="Profiles and contact" />
     </div>
-    <div class="prose">
-      {site.bio.map((para) => <p set:html={inlineHtml(para)} />)}
-    </div>
-    <LinkList links={site.links} class="meta" ariaLabel="Profiles and contact" />
   </header>
 
   <main id="main">
+    <section aria-labelledby="about">
+      <h2 id="about">About</h2>
+      <div class="prose">
+        {site.bio.map((para) => <p set:html={inlineHtml(para)} />)}
+      </div>
+    </section>
+
     {papers.length > 0 && (
       <section aria-labelledby="papers">
         <h2 id="papers">Papers</h2>

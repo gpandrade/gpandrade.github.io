@@ -67,7 +67,7 @@ const jsonLd = {
     <meta name="twitter:image" content={ogImage} />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)}></script>
   </head>
-  <body>
+  <body data-header={site.headerVariant} data-links={site.accentLinks ? 'accent' : undefined}>
     <a class="skip" href="#main">Skip to content</a>
     <div class="wrap">
       <slot />
@@ -76,5 +76,15 @@ const jsonLd = {
         <a href={site.repo}>Source on GitHub</a>
       </footer>
     </div>
+    <script is:inline>
+      // The one piece of client JS: honour prefers-reduced-motion by turning the loops into posters with controls.
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        for (const v of document.querySelectorAll('video[autoplay]')) {
+          v.removeAttribute('autoplay');
+          v.pause();
+          v.controls = true;
+        }
+      }
+    </script>
   </body>
 </html>

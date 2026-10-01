@@ -2,6 +2,8 @@
 export const site = {
   name: 'Gabriel P. Andrade',
   role: 'Researcher at Gensyn, working on information markets and the mechanisms behind them.',
+  /** One line under the name. No affiliation; the bio carries that. */
+  identity: 'Researcher working on information markets, mechanism design, and multi-agent systems.',
   jobTitle: 'Researcher',
   affiliation: { name: 'Gensyn', url: 'https://www.gensyn.ai/' },
   teamPage: 'https://www.gensyn.ai/team/gabriel-andrade',
@@ -23,7 +25,10 @@ export const site = {
     { label: 'LinkedIn', url: 'https://www.linkedin.com/in/gpandrade' },
   ],
   bio: [
-    "I'm a researcher at [Gensyn](https://www.gensyn.ai/research), where I work on information markets: mechanisms that pay people and models to reveal what they know, and the multi-agent systems that take shape once many strategic participants trade on the result. Most of my work sits where mechanism design, information elicitation, and multi-agent learning meet.",
+    'I work at [Gensyn](https://www.gensyn.ai/research) on information markets: mechanisms that pay people and models to reveal what they know, and the multi-agent systems that take shape once many strategic participants trade on the result. Most of my work sits where mechanism design, information elicitation, and multi-agent learning meet.',
     'Before Gensyn I was an Applied Scientist at Amazon, working on fraud and bad-actor detection. I received my PhD in computer science from the University of Colorado Boulder in 2022, advised by Rafael Frongillo and Joshua Grochow, where I studied the dynamics of learning in games. Before that I did an MS in applied mathematics at UMass Amherst.',
   ],
+  /** Layout switches for the design review; the chosen values get hard-coded afterwards. */
+  headerVariant: (import.meta.env.PUBLIC_HEADER_VARIANT ?? 'a') as 'a' | 'b',
+  accentLinks: import.meta.env.PUBLIC_ACCENT_LINKS === '1',
 } as const;

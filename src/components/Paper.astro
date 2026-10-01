@@ -23,7 +23,7 @@ const earlier = p.group === 'earlier';
   <h3 class="title"><a href={primary}>{p.title}</a></h3>
   <p class="meta authors">
     {p.authors.map((a, i) => (
-      <>{i > 0 && ', '}{site.authorMatch.test(a) ? <strong>{a}</strong> : a}</>
+      <>{i > 0 && ', '}{site.authorMatch.test(a) ? <strong>{site.name}</strong> : a}</>
     ))}
   </p>
   <p class="meta venue">{p.venue}</p>
