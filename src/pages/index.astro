@@ -47,7 +47,7 @@ const loops =
     : null;
 ---
 <Base preloadImages={featured.map((m) => `${m.src}.jpg`)}>
-  <header class="masthead" data-layout={site.header}>
+  <header class="masthead">
     <Image
       class="headshot"
       src={headshot}
@@ -67,14 +67,13 @@ const loops =
   </header>
 
   <main id="main">
-    {loops && site.header !== 'float' && <Loops {...loops} />}
     <section aria-labelledby="about">
       <h2 id="about">About</h2>
       <div class="prose">
         {site.bio.map((para) => <p set:html={inlineHtml(para)} />)}
       </div>
     </section>
-    {loops && site.header === 'float' && <Loops {...loops} />}
+    {loops && <Loops {...loops} />}
 
     {papers.length > 0 && (
       <section aria-labelledby="papers">

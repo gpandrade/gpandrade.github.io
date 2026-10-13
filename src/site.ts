@@ -42,8 +42,4 @@ export const site = {
   /** Where the dynamics loops live. 'pair': both loops in a figure under the header and the paper keeps a "Loops"
    *  link. 'lorenz': one larger Lorenz loop under the header; the Chua loop stays in the paper. */
   loops: ((import.meta.env.PUBLIC_LOOPS as string | undefined) ?? 'pair') as 'pair' | 'lorenz',
-  /** How the portrait sits from 720px. 'grid': a column beside the name block, the header row growing to the
-   *  portrait's height. 'float': floated right across the header and the start of About, which then precedes the
-   *  loops figure so its heading and first paragraph wrap beside the portrait. */
-  header: ((import.meta.env.PUBLIC_HEADER as string | undefined) ?? 'grid') as 'grid' | 'float',
 } as const;

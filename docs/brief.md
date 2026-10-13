@@ -87,11 +87,13 @@ Left-aligned, ragged right. Content column `max-width: 42rem`, page padding 1.25
 Gabriel P. Andrade                              [portrait 200px wide,
 Researcher working on information markets,       3:4, flush with the
 mechanism design, and multi-agent systems.       column's right edge,
-Email   Google Scholar   X   GitHub   LinkedIn   top on the cap height]
+Email   Google Scholar   X   GitHub   LinkedIn   top on the cap height,
+                                                 floated right so the
+About                                            name block, the About
+Bio paragraph one, in the narrow column           heading and the first
+beside the portrait for its whole length.        paragraph run beside it]
 
-About
-Bio paragraph one.
-Bio paragraph two.
+Bio paragraph two, full width.
 
 Papers
 2026       Evidence Markets
@@ -124,7 +126,7 @@ Writing
 Gabriel P. Andrade   Source on GitHub
 ```
 
-Portrait: the 3:4 composite of Gab and his cat Sadie, drawn at its own ratio and never cropped (the whole frame is the point), 4px radius (not a circle), alt text "Gabriel P. Andrade and his cat Sadie". Source `src/assets/headshot.jpg`, 900px wide, under 400 KB; the original under `media-src/`. The build emits 200/360/400px WebPs with `sizes`, a true 2× asset at both rendered widths. From 720px, 200px wide, flush with the column's right edge, top edge on the cap height of the name (measured, not eyeballed: 2px of margin); the name block takes the remaining width and nothing crosses the column edges at any width. Two layouts behind `site.header`: `grid` (default; the header row grows to the portrait's height) and `float` (the portrait floats right across the header and the start of About, which then precedes the loops figure so its heading and first paragraph wrap beside it). Under 720px, 180px above the name, left-aligned.
+Portrait: the 3:4 composite of Gab and his cat Sadie, drawn at its own ratio and never cropped (the whole frame is the point), 4px radius (not a circle), alt text "Gabriel P. Andrade and his cat Sadie". Source `src/assets/headshot.jpg`, 900px wide, under 400 KB; the original under `media-src/`. The build emits 200/360/400px WebPs with `sizes`, a true 2× asset at both rendered widths. From 720px, 200px wide, flush with the column's right edge, top edge on the cap height of the name (measured, not eyeballed: 2px of margin); the name block takes the remaining width and nothing crosses the column edges at any width. It floats right, so the name block, the About heading and the first bio paragraph run beside it; a paragraph that starts beside the portrait stays in the narrow column for its whole length (`display: flow-root`) and one that starts below it runs full width, so no paragraph has lines both beside and under the portrait. The loops figure follows About and clears the portrait. Under 720px, 180px above the name, left-aligned.
 
 Videos: two-up `<figure>` inside the COLT 2021 entry, each ~50% width on desktop, stacked on mobile, native aspect ratio, `figcaption` in meta style. Markup in §6.
 
@@ -518,6 +520,6 @@ The square headshot is replaced by a 3:4 composite portrait (Gab and his cat Sad
 
 1. Source: the original PNG archived in `media-src/`; the working source is a 900px-wide mozjpeg JPEG at q94 (363 KB), the largest under the 400 KB cap; the old `headshot.png` removed.
 2. Sizes: 200px from 720px, flush with the column's right edge, top on the cap height (2px of margin, measured at quarter-pixel in both schemes); 180px under 720px, above the name, left-aligned. `widths` 200/360/400 with `sizes`, so phones and retina desktops get the 2× file.
-3. Layouts behind `site.header` (`PUBLIC_HEADER`): `grid` (A) is the default, since it keeps the loops figure directly under the header; `float` (B) uses the space under the links but moves the loops below About, off the first screen at 1280×800 and on a phone.
+3. Layout: two were reviewed, a grid column beside the name block (the header row growing to the portrait's height, the loops figure directly under the header) and the float. Gab chose the float: the About heading and first paragraph run beside the portrait and the loops figure follows About. A paragraph that starts beside the portrait stays beside it for its whole length, so no line juts out under the portrait mid-paragraph; the cost is the space under the portrait when that paragraph runs past its bottom.
 4. Dark mode: the brightness/saturation dim is gone; the 1px `--rule` stays because the portrait's edges measure within a few levels of the dark `--bg`. Light mode: nothing.
 5. `og.png` regenerated with the portrait at left, full height; favicon unchanged. Lighthouse unchanged at 98/100/100/100, FCP 0.9 s, LCP 2.4 s, for both layouts.
