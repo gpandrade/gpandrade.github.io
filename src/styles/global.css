@@ -5,6 +5,10 @@
   --ink-2: #5b6170;
   --accent: #6b5d8c; /* smoky violet, hue 258°; 5.5:1 on --bg, so it can carry text as well as underlines */
   --rule: #e2e2dd;
+  /* Texture strokes: a few percent of ink over the background (brief §3), and the same contrast in the accent hue
+     for the engine's heat parameter. */
+  --texture-cold: color-mix(in srgb, var(--ink) 5%, var(--bg));
+  --texture-hot: color-mix(in srgb, var(--accent) 6%, var(--bg));
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -14,6 +18,8 @@
     --ink-2: #a2a6ae;
     --accent: #a89bc8; /* same family, 7.2:1 on dark --bg */
     --rule: #262a31;
+    --texture-cold: color-mix(in srgb, var(--ink) 7%, var(--bg));
+    --texture-hot: color-mix(in srgb, var(--accent) 15%, var(--bg));
   }
 }
 
@@ -23,6 +29,12 @@ html {
   font-optical-sizing: auto;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+/* In-page links (the loops, the skip link) scroll rather than jump, which also keeps the texture's input continuous. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 body {
   margin: 0;
@@ -255,7 +267,8 @@ main > section:first-child h2 {
   margin-top: 0.4rem;
 }
 
-/* Texture: fixed behind everything, hairline strokes a few percent from the background. */
+/* Texture: fixed behind everything, hairline strokes a few percent from the background. The SVG is the static
+   frame; with JS and motion allowed the engine replaces it with a canvas of the same class. */
 .texture {
   position: fixed;
   inset: 0;
@@ -263,16 +276,10 @@ main > section:first-child h2 {
   height: 100%;
   z-index: -1;
   pointer-events: none;
-  color: color-mix(in srgb, var(--ink) 5%, var(--bg));
+  color: var(--texture-cold);
   fill: none;
   stroke: currentColor;
   stroke-width: 1;
-  stroke-linejoin: round;
-}
-@media (prefers-color-scheme: dark) {
-  .texture {
-    color: color-mix(in srgb, var(--ink) 7%, var(--bg));
-  }
 }
 
 /* Writing */

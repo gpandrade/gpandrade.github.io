@@ -33,4 +33,9 @@ export const site = {
   videoFilter: ((import.meta.env.PUBLIC_VIDEO_FILTER as string | undefined) ?? 'invert') as 'hue' | 'none' | 'invert',
   /** The one decorative element: a faint tessellation behind the page, warped by learning dynamics as you scroll. */
   texture: import.meta.env.PUBLIC_TEXTURE !== 'off',
+  /** 'conservative': the kagome, stirred by scroll. 'full': the drawn edge set also transforms along the page,
+   *  kagome at the top, triangular through the middle, honeycomb at the bottom. */
+  textureVariant: ((import.meta.env.PUBLIC_TEXTURE_VARIANT as string | undefined) ?? 'full') as 'conservative' | 'full',
+  /** Slow drift while nothing is scrolling (one cycle per two minutes); the frame loop otherwise idles. */
+  textureIdle: import.meta.env.PUBLIC_TEXTURE_IDLE !== 'off',
 } as const;
