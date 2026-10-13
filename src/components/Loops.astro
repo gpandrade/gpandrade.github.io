@@ -1,0 +1,20 @@
+---
+import VideoLoop from './VideoLoop.astro';
+
+/** The dynamics loops under the header (site.loops): one figure, captioned with the paper they come from. */
+interface Props {
+  media: { src: string; caption: string }[];
+  paper: { id: string; title: string; venue: string };
+  text: string;
+}
+const { media, paper, text } = Astro.props;
+---
+<figure class="loops" id="loops">
+  <div class="loops-grid" data-count={media.length}>
+    {media.map((m) => <VideoLoop src={m.src} caption={m.caption} bare />)}
+  </div>
+  <figcaption class="meta">
+    Learning trajectories in a matrix game tracing {text}, from{' '}
+    <a href={`#${paper.id}`}>{paper.title}</a> ({paper.venue}).
+  </figcaption>
+</figure>
