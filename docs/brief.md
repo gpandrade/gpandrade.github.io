@@ -516,7 +516,7 @@ Changes to §2, §3 and §6 made on the `motion` branch; the text above is left 
 
 ## 17. Easter egg (2026-10-13)
 
-Built on the `egg` branch. The texture is the egg. Ideas, not content, come from the burst engine in
+Built on the `egg` branch; the single node described here became four nodes through the page in §19. The texture is the egg. Ideas, not content, come from the burst engine in
 `gpandrade/blaze-black-companion` (`app/js/pokeball.js`): a `pointer-events: none` fixed layer, particles that remove
 themselves, frame loops that terminate, a calm bloom under reduced motion, standing down in text fields and with
 modifiers held, an off state in localStorage. Everything drawn here is original geometry: no sprites, drawings or
@@ -571,3 +571,41 @@ The square headshot is replaced by a 3:4 composite portrait (Gab and his cat Sad
 3. Layout: two were reviewed, a grid column beside the name block (the header row growing to the portrait's height, the loops figure directly under the header) and the float. Gab chose the float: the About heading and first paragraph run beside the portrait and the loops figure follows About. A paragraph that starts beside the portrait stays beside it for its whole length, so no line juts out under the portrait mid-paragraph; the cost is the space under the portrait when that paragraph runs past its bottom.
 4. Dark mode: the brightness/saturation dim is gone; the 1px `--rule` stays because the portrait's edges measure within a few levels of the dark `--bg`. Light mode: nothing.
 5. `og.png` regenerated with the portrait at left, full height; favicon unchanged. Lighthouse unchanged at 98/100/100/100, FCP 0.9 s, LCP 2.4 s, for both layouts.
+
+## 19. Egg nodes (2026-10-13)
+
+Built on the `egg-nodes` branch, on the §17 engine. The brief's single node after the name becomes four live nodes
+scattered through the lattice at different depths of the page, found while scrolling, each firing a different guest.
+
+1. **The nodes.** One per guest, in page order: by the name (the Lorenz butterfly), beside the loops figure (the Chua
+   ghost), beside the Papers heading (the replicator school), near the footer (the bilinear-game learners). Each is a
+   kagome vertex (two of the lattice's three line families crossing, 24px of hairline in a 32px box, and a dot) in
+   its own hue on the technicolor cycle the egg uses: 215° (blue), 290° (magenta), 135° (green), 25° (orange), at 90%
+   saturation and the engine's lightness (46% light, 62% dark). Dim at rest (the hue mixed 40% into the background,
+   1.3–2.0:1 against it in light, 1.8–3.0:1 in dark), full hue on hover and for as long as its guest runs. The shock,
+   the shards and the guest's strokes start from the node's hue, so the colour is the link between a node and what
+   it fires.
+2. **Placement.** From 1024px the nodes sit in the margins, 80px out from the column edge (just over a cell),
+   alternating sides: Lorenz left, Chua right, replicator left, spiral right. Vertically, the centre of each is on
+   the cap-height centre of its heading's first letter (the name, "Papers", the footer line; measured at 4x, within
+   0.06px) or on the centre of the video grid. Below 1024px they sit in the vertical gaps between sections, at the
+   column's edges: under the links row, above the loops, above "Papers", above the footer rule. Never over text,
+   links or media at any width, so a click meant for a link cannot fire one; the probe checks every node's box
+   against every text, link and media box at 390, 720, 1024 and 1280.
+3. **Drift.** With the engine running, each node is translated by the lattice's displacement at its own position
+   (`texture.flowAt`, bilinear over the surrounding vertices), updated after every engine frame, so it drifts with
+   the flow like the vertex it is, within the engine's cap of 0.6 cell. Rest positions are measured once and on
+   reflow (a ResizeObserver on the body), so no layout is read per frame. No engine (reduced motion), no drift.
+4. **Discoverability.** A node pulses once, quietly (its full hue and a 1.3x swell over 1.6 s), the first time it is
+   well inside the viewport (an IntersectionObserver at threshold 1 with an 8% inset), a beat after load for the ones
+   in view at load; never again that session (`sessionStorage['gpandrade.egg.seen']`); off under reduced motion and
+   while the egg is put away.
+5. **Triggers.** A click on a node fires its guest from the node; five taps within 2.5 s of each other on a phone,
+   counted per node. The code fires a random guest, from its node when that is on screen, else the viewport centre.
+   Escape, or a second trigger on any node, ends a running show. "Put it away" dims all four (grey, 25%) and
+   localStorage remembers; a click on any dim node brings all four back, with a beat of light, without firing.
+6. **Cost.** The texture script (engine + trigger) is 11.7 KB raw, 5.5 KB gzipped, against the 15 KB budget; the egg
+   chunk is unchanged at 9.3 KB and still loads on the first trigger step only. Lighthouse mobile unchanged.
+7. **Files.** `src/components/Egg.astro` (one node, by guest), the four placements in `index.astro`, `Loops.astro`
+   (a slot in the grid) and `Base.astro` (the footer), the `.node` rules in `global.css`, `flowAt` and `onFrame` in
+   `texture.ts`, `hue`, `onEnd` and a `data-guests` marker in `egg.ts`, and the rewritten `egg-trigger.ts`.

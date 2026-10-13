@@ -309,15 +309,28 @@ main > section:first-child h2 {
   stroke-width: 1;
 }
 
-/* The easter egg's node (docs/brief.md §17): a lattice vertex after the name, quiet at rest, accent on hover.
-   `off` is the remembered put-away state; a click brings it back. */
+/* The easter egg's nodes (docs/brief.md §19): four lattice vertices through the page, each in its own hue, dim at
+   rest, full on hover and while its guest runs (`lit`). `pulse` is the once-a-session hint when a node first comes
+   into view; `off` is the remembered put-away state, and a click on any dim node brings them all back. The box is
+   32px and the glyph 24px; negative margins make `left`/`right`/`top`/`bottom` the position of the centre. */
+:root {
+  --node-l: 46%;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --node-l: 62%;
+  }
+}
+.masthead, .loops-grid, main > section, footer {
+  position: relative;
+}
 .node {
-  display: inline-block;
-  width: 0.42em;
-  height: 0.42em;
-  margin-left: 0.3em;
-  vertical-align: 0.1em;
-  color: color-mix(in srgb, var(--ink-2) 45%, var(--bg));
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  margin: -16px;
+  --node: hsl(var(--hue) 90% var(--node-l));
+  color: color-mix(in srgb, var(--node) 40%, var(--bg));
   cursor: pointer;
   touch-action: manipulation;
   user-select: none;
@@ -336,10 +349,66 @@ main > section:first-child h2 {
   stroke: none;
 }
 .node:hover, .node.lit {
-  color: var(--accent);
+  color: var(--node);
 }
 .node.off {
-  opacity: 0.4;
+  color: var(--ink-2);
+  opacity: 0.25;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .node.pulse {
+    animation: node-pulse 1.6s ease-in-out;
+  }
+  .node.pulse svg {
+    animation: node-swell 1.6s ease-in-out;
+  }
+  @keyframes node-pulse {
+    40% { color: var(--node); }
+  }
+  @keyframes node-swell {
+    40% { transform: scale(1.3); }
+  }
+}
+/* Placement. Below 1024px the nodes sit in the vertical gaps between sections, at the column's edges: the Lorenz
+   node below the header's links row, the Chua node above the loops figure, the replicator node above the Papers
+   heading, the spiral node above the footer rule. From 1024px they move out into the margins, 80px from the column
+   edge (just over a cell), level with the name, the loops, the Papers heading and the footer line: the vertical
+   offsets put each node's centre on the cap-height centre of its heading's first letter (measured at 4x) or on the
+   centre of the video grid. */
+.node[data-guest='lorenz'] {
+  left: 1rem;
+  bottom: -1.25rem;
+}
+.node[data-guest='chua'] {
+  right: 1rem;
+  top: -1.25rem;
+}
+.node[data-guest='rps'] {
+  left: 1rem;
+  top: -1.5rem;
+}
+.node[data-guest='spiral'] {
+  right: 1rem;
+  top: -2rem;
+}
+@media (min-width: 1024px) {
+  .node[data-guest='lorenz'] {
+    left: -80px;
+    bottom: auto;
+    top: 0.95rem;
+  }
+  .node[data-guest='chua'] {
+    right: -80px;
+    top: 50%;
+  }
+  .node[data-guest='rps'] {
+    left: -80px;
+    top: 0.71rem;
+  }
+  .node[data-guest='spiral'] {
+    right: -80px;
+    top: 1.84rem;
+  }
 }
 
 /* Writing */

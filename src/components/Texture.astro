@@ -7,8 +7,8 @@ import { site } from '../site';
  * straight kagome lines at true scale (no viewBox, so nothing is rescaled), large enough for any viewport. With JS
  * and motion allowed, the script swaps in a canvas driven by the engine in src/lib/texture.ts, which starts from the
  * same rest lattice so the handover is invisible. The engine instance is exposed as `window.texture`; the easter egg
- * (src/lib/egg.ts) calls it. This script also arms the egg's trigger when its node is on the page, so the page makes
- * one script request either way.
+ * (src/lib/egg.ts) calls it. This script also arms the egg's trigger for the nodes on the page, so the page makes one
+ * script request either way.
  */
 const d = staticLines(4096, 2560);
 ---
@@ -19,9 +19,6 @@ const d = staticLines(4096, 2560);
 <script>
   import { createTexture } from '../lib/texture';
   import { armEgg } from '../lib/egg-trigger';
-
-  const node = document.querySelector<HTMLElement>('.node');
-  if (node) armEgg(node);
 
   const svg = document.querySelector<SVGSVGElement>('svg[data-texture]');
   if (svg && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -34,4 +31,7 @@ const d = staticLines(4096, 2560);
       idle: svg.dataset.idle !== undefined,
     });
   }
+
+  const nodes = [...document.querySelectorAll<HTMLElement>('.node')];
+  if (nodes.length) armEgg(nodes);
 </script>

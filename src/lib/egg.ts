@@ -1,6 +1,6 @@
 /**
- * The easter egg. Nothing on the page imports this module: src/components/Egg.astro loads it on the first trigger
- * step (a hover or tap on the node after the name, or the first ↑ of the code), and calls `toggle`.
+ * The easter egg. Nothing on the page imports this module: the trigger (src/lib/egg-trigger.ts) loads it on the first
+ * trigger step (a hover or tap on one of the nodes, or the first ↑ of the code), and calls `toggle`.
  *
  * The texture is the egg. A trigger launches a shock in the lattice through the engine API (`window.texture.shock`):
  * vertices scatter along the dynamics field, edges flash through a hue cycle, and the lattice cools back to the
@@ -28,8 +28,12 @@ export interface Options {
   at?: readonly [number, number];
   /** Which guests appear. All of them, staggered, by default. */
   guests?: readonly Guest[];
+  /** The hue the flash, the shards and the guests start from (a node's own hue); random otherwise. */
+  hue?: number;
   /** Called when the viewer clicks "Put it away". */
   onOff?: () => void;
+  /** Called when the show ends, however it ends. */
+  onEnd?: () => void;
 }
 
 interface Show {
@@ -39,6 +43,8 @@ interface Show {
   svg: SVGSVGElement;
   timers: number[];
   tex: Texture | undefined;
+  hue: number;
+  onEnd?: () => void;
 }
 
 const SVG = 'http://www.w3.org/2000/svg';
@@ -135,7 +141,7 @@ function vector(fl: Flavour, t: number, spread: number): [number, number] {
 /** Scaled to the viewport. `calm` is the reduced-motion bloom: ten small shards, nothing else. */
 function burst(st: Show, x: number, y: number, calm: boolean): void {
   const diag = Math.hypot(innerWidth, innerHeight);
-  const base = rand(0, 360);
+  const base = st.hue;
   const n = calm ? 10 : Math.round(rand(70, 120));
   const spread = calm ? 90 : diag * rand(0.5, 0.85);
   const fl: Flavour = calm ? 'bloom' : pick(['bloom', 'spiral', 'fountain', 'vortex']);
@@ -180,7 +186,7 @@ function lorenz(st: Show): void {
   const f = (q: V3): V3 => [10 * (q[1] - q[0]), q[0] * (28 - q[2]) - q[1], q[0] * q[1] - (8 / 3) * q[2]];
   for (let i = 0; i < 400; i++) rk2(p, f, 0.005); // burn in, onto the attractor
   const pt = () => `${(p[0] * s * 1.3).toFixed(1)} ${((25 - p[2]) * s).toFixed(1)}`;
-  let hue = rand(0, 360), seg = stroke(g, hue, 1.4), d = 'M' + pt(), count = 0;
+  let hue = st.hue, seg = stroke(g, hue, 1.4), d = 'M' + pt(), count = 0;
   loop(st, life, (dt) => {
     for (let units = 3.2 * dt; units > 0; units -= 0.004) {
       rk2(p, f, 0.004);
@@ -209,7 +215,7 @@ function chua(st: Show): void {
   const vw = innerWidth, vh = innerHeight, d = chuaPath(), k = Math.round(rand(4, 6));
   for (let i = 0; i < k; i++) {
     const size = rand(0.3, 0.55) * Math.min(vw, vh), x = rand(size * 0.6, vw - size * 0.6), y = rand(size * 0.4, vh - size * 0.4);
-    const dur = rand(1500, 2100), hue = rand(0, 360);
+    const dur = rand(1500, 2100), hue = st.hue + i * 35;
     const at = (dy: number, sc: number) => `translate(${x}px, ${y + dy}px) scale(${(size / 2) * sc})`;
     later(st, i * rand(520, 820), () => {
       const g = group(st, 2000, dur);
@@ -257,7 +263,7 @@ function school(st: Show): void {
   for (let i = 0; i < n; i++) {
     const size = rand(30, 70) * (0.6 + 0.4 * crowd) * rand(0.8, 1.3), life = rand(3200, 5200), delay = i * rand(40, 120);
     const g = group(st, 2400, life + delay);
-    const p = stroke(g, rand(0, 360), 1.5, orbit(rand(0.05, 0.5)));
+    const p = stroke(g, st.hue + rand(-60, 60), 1.5, orbit(rand(0.05, 0.5)));
     p.setAttribute('stroke-dasharray', '.45 .25');
     p.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: -7 }], { duration: 1400, iterations: Math.ceil((life + delay) / 1400) + 1 });
     const x0 = dir > 0 ? -size * 2 : vw + size * 2, x1 = dir > 0 ? vw + size * 2 : -size * 2;
@@ -281,7 +287,7 @@ function spiral(st: Show): void {
   g.style.transform = `translate(${rand(vw * 0.3, vw * 0.7)}px, ${rand(vh * 0.3, vh * 0.7)}px)`;
   let ax = 3, ay = 0, bx = R * 0.9, by = 0, px = bx, py = by;
   let da = `M${ax} ${ay}`, db = `M${bx.toFixed(1)} ${by}`;
-  const out = stroke(g, rand(0, 360), 1.5), inn = stroke(g, rand(0, 360), 1.5);
+  const out = stroke(g, st.hue, 1.5), inn = stroke(g, st.hue + 180, 1.5);
   loop(st, life, (dt) => {
     for (let steps = Math.round(120 * dt); steps > 0; steps--) {
       if (Math.hypot(ax, ay) < R) { const nx = ax - eta * ay, ny = ay + eta * ax; ax = nx; ay = ny; da += `L${ax.toFixed(1)} ${ay.toFixed(1)}`; }
@@ -313,14 +319,15 @@ export function start(opts: Options = {}): void {
   const svg = document.createElementNS(SVG, 'svg');
   layer.append(svg);
   document.body.append(layer);
-  const st: Show = { alive: true, layer, off: null, svg, timers: [], tex: window.texture };
+  const st: Show = { alive: true, layer, off: null, svg, timers: [], tex: window.texture, hue: opts.hue ?? rand(0, 360), onEnd: opts.onEnd };
   show = st;
   const calm = reduced();
   const [x, y] = opts.at ?? [innerWidth / 2, innerHeight / 2];
+  const guests = opts.guests ?? GUESTS;
+  layer.dataset.guests = calm ? '' : guests.join(' ');
   if (!calm) st.tex?.shock(x, y, 1);
   burst(st, x, y, calm);
   if (!calm) {
-    const guests = opts.guests ?? GUESTS;
     for (const [name, at] of ENTRANCES) if (guests.includes(name)) later(st, guests.length > 1 ? at : 250, () => RUN[name](st));
     const off = document.createElement('a');
     off.className = 'egg-off';
@@ -345,12 +352,13 @@ export function end(): void {
   st.tex?.settle();
   st.off?.remove();
   cleanup(st.layer, st.layer.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 450, easing: 'ease-in', fill: 'forwards' }));
+  st.onEnd?.();
 }
 
 /** The trigger: a show starts, or the running one ends. Returns true when a show started. */
-export function toggle(at: readonly [number, number], onOff?: () => void): boolean {
+export function toggle(opts: Options = {}): boolean {
   if (show) { end(); return false; }
-  start({ at, onOff });
+  start(opts);
   return true;
 }
 

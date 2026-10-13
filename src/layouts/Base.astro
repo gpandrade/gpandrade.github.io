@@ -3,6 +3,7 @@ import '../styles/global.css';
 import newsreader from '@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url';
 import { site } from '../site';
 import Texture from '../components/Texture.astro';
+import Egg from '../components/Egg.astro';
 
 interface Props {
   title?: string;
@@ -79,6 +80,7 @@ const jsonLd = {
       <footer class="meta">
         <span>{site.name}</span>
         <a href={site.repo}>Source on GitHub</a>
+        {site.egg && site.texture && <Egg guest="spiral" />}
       </footer>
     </div>
     <script is:inline>

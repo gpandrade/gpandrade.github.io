@@ -14,6 +14,7 @@
  * `shock` is the one loud thing the engine can do, for the easter egg (src/lib/egg.ts): crests travel outward from a
  * point, vertices under a crest scatter along the field, edges behind the front light up through a hue cycle, and it
  * all cools back to the hairline in about six seconds. At rest the frame is byte-identical to the static one.
+ * `flowAt` and `onFrame` let the egg's nodes (DOM elements in the margins) follow the lattice's displacement.
  */
 
 export const PITCH = 72;
@@ -72,6 +73,11 @@ export interface Texture {
   destroy(): void;
   /** Current mean and max vertex displacement, in cells. */
   readonly displacement: { mean: number; max: number };
+  /** The lattice's displacement at a viewport point, in px, interpolated from the vertices around it. The easter
+   *  egg's nodes ride on this so they drift with the lattice. */
+  flowAt(x: number, y: number): [number, number];
+  /** Register a callback for after every rendered frame. */
+  onFrame(fn: () => void): void;
 }
 
 // Tuning. Distances in CSS px, times in seconds, field magnitudes are ~0.2.
@@ -203,6 +209,8 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
   let shock: { x: number; y: number; e: number; t: number; crests: number; settled: number } | null = null;
   let hueCss: string[] = [];
   let running = false, timer = 0, last = 0;
+  const frameFns: (() => void)[] = [];
+  const fa = [0, 0], fb = [0, 0];
 
   /** Distances from a shock origin, from rest positions (vertices move less than a cell). */
   function aim(x: number, y: number): void {
@@ -391,6 +399,7 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
     last = now;
     const active = step(dt);
     render();
+    for (const fn of frameFns) fn();
     if (active) requestAnimationFrame(tick);
     else if (opts.idle || maxDisp > REST * a) timer = window.setTimeout(() => { timer = 0; requestAnimationFrame(tick); }, SLOW_MS);
     else running = false; // relaxed to within REST of rest: nothing visible is changing, so stop
@@ -445,6 +454,20 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
       for (let v = 0; v < n; v++) { const d = Math.hypot(dx[v]!, dy[v]!); sum += d; if (d > max) max = d; }
       return { mean: sum / (n || 1) / a, max: max / a };
     },
+    flowAt(x, y) {
+      // Bilinear over the two rows around y and the two vertices around x in each (rows alternate a half-cell offset).
+      const jf = y / row + 1, j0 = Math.floor(jf), t = jf - j0;
+      const sample = (j: number, out: number[]): void => {
+        const jj = Math.min(rows - 1, Math.max(0, j));
+        const fi = (x + a) / a - (jj & 1) * 0.5, i0 = Math.floor(fi), s = fi - i0;
+        const va = jj * cols + Math.min(cols - 1, Math.max(0, i0)), vb = jj * cols + Math.min(cols - 1, Math.max(0, i0 + 1));
+        out[0] = dx[va]! * (1 - s) + dx[vb]! * s;
+        out[1] = dy[va]! * (1 - s) + dy[vb]! * s;
+      };
+      sample(j0, fa); sample(j0 + 1, fb);
+      return [fa[0]! * (1 - t) + fb[0]! * t, fa[1]! * (1 - t) + fb[1]! * t];
+    },
+    onFrame(fn) { frameFns.push(fn); },
     destroy() {
       running = false;
       clearTimeout(timer);
