@@ -1,8 +1,25 @@
 ---
 /**
- * The easter egg's node: a lattice vertex after the name. The texture script (Texture.astro) arms the trigger
- * (src/lib/egg-trigger.ts) when this is on the page, and the egg itself (src/lib/egg.ts) loads on the first trigger
- * step. Behind `site.egg`; it also needs `site.texture`, since the texture is what the egg shocks.
+ * One of the easter egg's nodes: a lattice vertex, lit in its own hue, that fires one guest. Four sit at different
+ * depths of the page (docs/brief.md §19): in the margins from 1024px, in the gaps between sections below that; the
+ * placement is in global.css. The texture script (Texture.astro) arms the trigger (src/lib/egg-trigger.ts) for every
+ * node on the page, and the egg itself (src/lib/egg.ts) loads on the first trigger step. Behind `site.egg`; it also
+ * needs `site.texture`, since the texture is what the egg shocks.
  */
+interface Props {
+  guest: 'lorenz' | 'chua' | 'rps' | 'spiral';
+}
+const { guest } = Astro.props;
+
+/** The hue, on the technicolor cycle the egg uses, and which two of the lattice's three line families cross at the
+ *  vertex (a kagome vertex lies on exactly two). Lines are 24px long in a 32px box. */
+const H = 'M4 16H28', UP = 'M10 26.39L22 5.61', DOWN = 'M10 5.61L22 26.39';
+const NODES = {
+  lorenz: { hue: 215, lines: `${H}${UP}` },
+  chua: { hue: 290, lines: `${UP}${DOWN}` },
+  rps: { hue: 135, lines: `${H}${DOWN}` },
+  spiral: { hue: 25, lines: `${H}${UP}` },
+} as const;
+const { hue, lines } = NODES[guest];
 ---
-<span class="node" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M0 7H14M3.5 13.06L10.5 .94" /><circle cx="7" cy="7" r="2" /></svg></span>
+<span class="node" data-guest={guest} style={`--hue:${hue}`} aria-hidden="true"><svg viewBox="0 0 32 32"><path d={lines} /><circle cx="16" cy="16" r="2.2" /></svg></span>

@@ -46,6 +46,9 @@ const loops =
   loopsPaper && featured.length > 0
     ? { media: featured, paper: { id: loopsPaper.id, title: loopsPaper.data.title, venue: loopsPaper.data.venue }, text: loopsText }
     : null;
+
+/** The easter egg's nodes (docs/brief.md §19): three here, the fourth in the footer (Base.astro). */
+const egg = site.egg && site.texture;
 ---
 <Base preloadImages={featured.map((m) => `${m.src}.jpg`)}>
   <header class="masthead">
@@ -61,10 +64,11 @@ const loops =
       fetchpriority="high"
     />
     <div class="nameblock">
-      <h1>{site.name}{site.egg && site.texture && <Egg />}</h1>
+      <h1>{site.name}</h1>
       <p class="identity">{site.identity}</p>
       <LinkList links={site.links} class="meta" ariaLabel="Profiles and contact" />
     </div>
+    {egg && <Egg guest="lorenz" />}
   </header>
 
   <main id="main">
@@ -74,10 +78,11 @@ const loops =
         {site.bio.map((para) => <p set:html={inlineHtml(para)} />)}
       </div>
     </section>
-    {loops && <Loops {...loops} />}
+    {loops && <Loops {...loops}>{egg && <Egg guest="chua" />}</Loops>}
 
     {papers.length > 0 && (
       <section aria-labelledby="papers">
+        {egg && <Egg guest="rps" />}
         <h2 id="papers">Papers</h2>
         <ul class="yeared">
           {papers.map(([year, entries]) => (
