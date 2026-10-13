@@ -514,6 +514,54 @@ Changes to §2, §3 and §6 made on the `motion` branch; the text above is left 
 4. Review material (screenshots, recordings, Lighthouse reports) lives in the session scratchpad, not the repo;
    `docs/screenshots/` is gone.
 
+## 17. Easter egg (2026-10-13)
+
+Built on the `egg` branch. The texture is the egg. Ideas, not content, come from the burst engine in
+`gpandrade/blaze-black-companion` (`app/js/pokeball.js`): a `pointer-events: none` fixed layer, particles that remove
+themselves, frame loops that terminate, a calm bloom under reduced motion, standing down in text fields and with
+modifiers held, an off state in localStorage. Everything drawn here is original geometry: no sprites, drawings or
+names from anywhere else.
+
+1. **What happens.** A trigger launches a shock in the lattice through the engine API (`window.texture.shock`):
+   three crests leave the trigger point at 900 px/s; vertices under a crest scatter along the dynamics field (the
+   Hamiltonian RPS field that stirs the lattice on scroll, driven hard for the 0.15 s a crest takes to pass) with a
+   radial push; edges behind the front light up in a hue that cycles with distance and time; the lattice relaxes
+   (τ 1.6 s while excited) and the glow decays (τ 1.4 s), so it is back to the hairline by 6 s. A particle layer sits
+   on top: a flash, two to four shockwave rings, 70–120 shards (triangles, hexagons, rhombi, rings) in one of four
+   emission flavours, multiply-blended in light mode and screen-blended in dark, all Web Animations that remove
+   their elements on finish. The guests are hue-cycled SVG strokes integrated live in the module: the Lorenz
+   butterfly tracing itself while drifting across the screen (from 0.25 s, for 5.2 s); a school of
+   rock–paper–scissors replicator orbits swimming across (from 0.7 s; heavy-tailed, 6 to 30 of them); the Chua
+   double scroll as a ghost, phasing in and out four to six times with after-images, each apparition stirring the
+   lattice (from 1.1 s); and, proposed from the electricity-market paper, two gradient learners in the bilinear
+   game x·y, simultaneous gradient play spiralling out of the equilibrium and optimistic gradient play spiralling
+   in (from 1.6 s). The show ends at 8 s.
+2. **Triggers.** Desktop: the Konami code (↑ ↑ ↓ ↓ ← → ← → B A), or a click on the lattice node after the name (a
+   kagome vertex: two hairlines crossing and a dot; quiet at rest, accent on hover). Phone, meaning a coarse pointer:
+   five taps on the node within 2.5 s of each other. A single arrow press fires nothing and is never prevented; the
+   key listener stands down in text fields, with a modifier held, on key repeat, and while the egg is off. Escape, or
+   a second trigger, ends a show. The code's shock starts from the node when it is on screen, else the viewport
+   centre.
+3. **Off.** "Put it away", a link in the corner during a show, sets `localStorage['gpandrade.egg']` to `off`: the node
+   dims to 40% and both triggers stand down. Clicking the dim node brings it back without firing. Remembered per
+   browser, the way the companion remembers its balls.
+4. **Cost.** The egg module (`src/lib/egg.ts`) is its own chunk, 9.3 KB raw (4.0 KB gzipped), imported on the first
+   trigger step (a hover or tap on the node, or the first ↑), never at load. The trigger (`src/lib/egg-trigger.ts`)
+   rides in the texture script, so the page makes one script request as before; that script is 9.7 KB raw against
+   the 20 KB budget. No library. Every loop has a deadline and stops when the show ends; the engine's own loop returns
+   to its idle schedule. JS work during a show is under 1 ms per frame at 1280 and at 390 × 3. Lighthouse mobile is
+   unchanged at 98 / 100 / 100 / 100 with LCP 2.4 s.
+5. **Reduced motion.** The calm bloom only: ten small shards for under a second. No shock (the engine does not run
+   under reduced motion), no guests, no link.
+6. **Engine additions** (`src/lib/texture.ts`): `shock(x, y, energy)`, `settle()`, `excited`. The rest frame is
+   unchanged, so the static-to-canvas handover is too. A latent bug in the edge-midpoint arrays (computed before the
+   neighbour vertex's rest position was filled in) is fixed; it affected only the `full` variant's structure phase,
+   whose transitions now span the fifth of the page the formula describes rather than twice that.
+7. **Flag.** `site.egg` (`PUBLIC_EGG=off` drops the node and the trigger). The egg needs `site.texture`.
+8. **Files.** `src/lib/egg.ts`, `src/lib/egg-trigger.ts`, `src/components/Egg.astro`, the `.node` rules in
+   `global.css`, the `shock` additions in `texture.ts`, the flag, and one line in `index.astro`. Deleting the first
+   four and the flag removes the whole thing.
+
 ## 18. Portrait (2026-10-13)
 
 The square headshot is replaced by a 3:4 composite portrait (Gab and his cat Sadie), never cropped. Decisions taken in this pass:

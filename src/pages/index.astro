@@ -6,6 +6,7 @@ import Paper from '../components/Paper.astro';
 import LinkList from '../components/LinkList.astro';
 import DatedList from '../components/DatedList.astro';
 import Loops from '../components/Loops.astro';
+import Egg from '../components/Egg.astro';
 import { site } from '../site';
 import { inlineHtml } from '../lib/inline';
 import headshot from '../assets/headshot.jpg';
@@ -60,7 +61,7 @@ const loops =
       fetchpriority="high"
     />
     <div class="nameblock">
-      <h1>{site.name}</h1>
+      <h1>{site.name}{site.egg && site.texture && <Egg />}</h1>
       <p class="identity">{site.identity}</p>
       <LinkList links={site.links} class="meta" ariaLabel="Profiles and contact" />
     </div>

@@ -1,0 +1,8 @@
+---
+/**
+ * The easter egg's node: a lattice vertex after the name. The texture script (Texture.astro) arms the trigger
+ * (src/lib/egg-trigger.ts) when this is on the page, and the egg itself (src/lib/egg.ts) loads on the first trigger
+ * step. Behind `site.egg`; it also needs `site.texture`, since the texture is what the egg shocks.
+ */
+---
+<span class="node" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M0 7H14M3.5 13.06L10.5 .94" /><circle cx="7" cy="7" r="2" /></svg></span>
