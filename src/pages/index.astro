@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Paper from '../components/Paper.astro';
+import LinkList from '../components/LinkList.astro';
+import DatedList from '../components/DatedList.astro';
+import { site } from '../site';
+import { inlineHtml } from '../lib/inline';
+import headshot from '../assets/headshot.png';
+
+const all = (await getCollection('papers')).filter((p) => !p.data.draft);
+
+/** Group by year, newest year first. Within a year: by `date` desc, undated last, then by id. */
+function byYear(entries: typeof all) {
+  const groups = new Map<number, typeof all>();
+  for (const e of entries) groups.set(e.data.year, [...(groups.get(e.data.year) ?? []), e]);
+  const newestFirst = (a: (typeof all)[number], b: (typeof all)[number]) => {
+    const da = a.data.date ?? '', db = b.data.date ?? '';
+    if (da !== db) return da === '' ? 1 : db === '' ? -1 : db.localeCompare(da);
+    return a.id.localeCompare(b.id);
+  };
+  return [...groups.entries()].sort(([a], [b]) => b - a).map(([y, es]) => [y, es.sort(newestFirst)] as const);
+}
+const papers = byYear(all.filter((p) => p.data.group === 'papers'));
+const earlier = byYear(all.filter((p) => p.data.group === 'earlier'));
+
+const writing = (await getCollection('writing'))
+  .map((w) => w.data)
+  .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+---
+<Base>
+  <header class="masthead">
+    <Image class="headshot" src={headshot} alt={site.name} width={220} height={220} loading="eager" />
+    <div class="nameblock">
+      <h1>{site.name}</h1>
+      <p class="identity">{site.identity}</p>
+      <LinkList links={site.links} class="meta" ariaLabel="Profiles and contact" />
+    </div>
+  </header>
+
+  <main id="main">
+    <section aria-labelledby="about">
+      <h2 id="about">About</h2>
+      <div class="prose">
+        {site.bio.map((para) => <p set:html={inlineHtml(para)} />)}
+      </div>
+    </section>
+
+    {papers.length > 0 && (
+      <section aria-labelledby="papers">
+        <h2 id="papers">Papers</h2>
+        <ul class="yeared">
+          {papers.map(([year, entries]) => (
+            <li>
+              <span class="year meta">{year}</span>
+              <ul class="entries">
+                {entries.map((p) => <li><Paper paper={p} /></li>)}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {earlier.length > 0 && (
+      <section aria-labelledby="earlier">
+        <h2 id="earlier">Earlier work</h2>
+        <ul class="yeared">
+          {earlier.map(([year, entries]) => (
+            <li>
+              <span class="year meta">{year}</span>
+              <ul class="entries">
+                {entries.map((p) => <li><Paper paper={p} /></li>)}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {writing.length > 0 && (
+      <section aria-labelledby="writing">
+        <h2 id="writing">Writing</h2>
+        <DatedList items={writing} />
+        <p class="more meta">More on the <a href={site.researchPage}>Gensyn research page</a>.</p>
+      </section>
+    )}
+  </main>
+</Base>

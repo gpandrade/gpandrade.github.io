@@ -1,0 +1,7 @@
+# Phase 2 configuration (docs/brief.md §10). Nothing reads this yet.
+orcid: 0009-0001-7397-9999
+openalex_author_id: A5017847566                 # primary profile; holds the EC/COLT papers
+openalex_secondary_author_ids: [A5120316365]    # split profile that picked up a co-author's affiliation; query both
+semantic_scholar_author_id: null                # optional second source
+mailto: gabriel@gensyn.ai                       # OpenAlex polite pool
+ignore: []                                      # false positives: OpenAlex work ids or arXiv ids

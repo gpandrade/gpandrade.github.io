@@ -1,0 +1,16 @@
+---
+/** A row of plain-label links separated by spacing. */
+interface Props {
+  links: ReadonlyArray<{ label: string; url: string }>;
+  class?: string;
+  ariaLabel?: string;
+}
+const { links, class: cls = '', ariaLabel } = Astro.props;
+---
+{links.length > 0 && (
+  <ul class:list={['links', cls]} aria-label={ariaLabel}>
+    {links.map((l) => (
+      <li><a href={l.url}>{l.label}</a></li>
+    ))}
+  </ul>
+)}

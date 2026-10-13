@@ -1,0 +1,92 @@
+---
+import '../styles/global.css';
+import newsreader from '@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url';
+import { site } from '../site';
+import Texture from '../components/Texture.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: { src: string; width: number; height: number } | null;
+}
+const { title = site.name, description = site.description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL('/og.png', site.url).href;
+
+const fontFace = `@font-face{font-family:'Newsreader Variable';font-style:normal;font-weight:200 800;font-display:swap;src:url(${newsreader}) format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  jobTitle: site.jobTitle,
+  affiliation: { '@type': 'Organization', name: site.affiliation.name, url: site.affiliation.url },
+  url: site.url + '/',
+  image: ogImage,
+  email: `mailto:${site.email}`,
+  sameAs: [
+    site.links.find((l) => l.label === 'Google Scholar')!.url,
+    site.links.find((l) => l.label === 'LinkedIn')!.url,
+    site.links.find((l) => l.label === 'GitHub')!.url,
+    site.links.find((l) => l.label === 'X')!.url,
+    site.orcid,
+    site.teamPage,
+  ],
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8f8f6" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121418" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href={newsreader} as="font" type="font/woff2" crossorigin />
+    <style is:inline set:html={fontFace}></style>
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name}. ${site.role}`} />
+    <meta property="profile:first_name" content="Gabriel" />
+    <meta property="profile:last_name" content="Andrade" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content={site.twitter} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)}></script>
+  </head>
+  <body data-video={site.videoFilter}>
+    {site.texture && <Texture />}
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="wrap">
+      <slot />
+      <footer class="meta">
+        <span>{site.name}</span>
+        <a href={site.repo}>Source on GitHub</a>
+      </footer>
+    </div>
+    <script is:inline>
+      // The one piece of client JS: honour prefers-reduced-motion by turning the loops into posters with controls.
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        for (const v of document.querySelectorAll('video[autoplay]')) {
+          v.removeAttribute('autoplay');
+          v.pause();
+          v.controls = true;
+        }
+      }
+    </script>
+  </body>
+</html>

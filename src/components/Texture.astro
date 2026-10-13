@@ -1,0 +1,43 @@
+---
+import { buildFrame } from '../lib/texture';
+
+/**
+ * Static frame rendered at build time for a 1440×900 reference viewport, so the texture exists without JS and
+ * stays still under prefers-reduced-motion. The script rebuilds it for the real viewport and advances it with scroll.
+ */
+const W = 1440, H = 900;
+const frame = buildFrame(W, H, 0);
+---
+<svg class="texture" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false" data-texture>
+  {frame.paths.map((d) => <path d={d} />)}
+</svg>
+
+<script>
+  import { buildFrame } from '../lib/texture';
+
+  const svg = document.querySelector<SVGSVGElement>('svg[data-texture]');
+  if (svg && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let w = 0, h = 0, t = -1, queued = false;
+    const draw = () => {
+      queued = false;
+      const nw = innerWidth, nh = innerHeight;
+      const max = Math.max(1, document.documentElement.scrollHeight - nh);
+      const nt = Math.min(1, Math.max(0, scrollY / max));
+      if (nw === w && nh === h && Math.abs(nt - t) < 0.0005) return;
+      w = nw; h = nh; t = nt;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      const { paths } = buildFrame(w, h, t);
+      const nodes = svg.children;
+      while (nodes.length > paths.length) svg.removeChild(nodes[nodes.length - 1]!);
+      for (let i = 0; i < paths.length; i++) {
+        let el = nodes[i] as SVGPathElement | undefined;
+        if (!el) { el = document.createElementNS('http://www.w3.org/2000/svg', 'path'); svg.appendChild(el); }
+        el.setAttribute('d', paths[i]!);
+      }
+    };
+    const request = () => { if (!queued) { queued = true; requestAnimationFrame(draw); } };
+    addEventListener('scroll', request, { passive: true });
+    addEventListener('resize', request, { passive: true });
+    request();
+  }
+</script>

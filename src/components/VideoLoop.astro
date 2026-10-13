@@ -1,0 +1,22 @@
+---
+import { jpegSize } from '../lib/jpegSize';
+
+/**
+ * A muted, looping video with a poster. Under prefers-reduced-motion a short inline script in the
+ * layout removes autoplay and adds controls, so the poster shows and the loop plays only on request.
+ */
+interface Props {
+  src: string; // "/media/lorenz" -> lorenz.webm, lorenz.mp4, lorenz.jpg
+  caption: string;
+}
+const { src, caption } = Astro.props;
+const size = jpegSize(`public${src}.jpg`) ?? { width: 720, height: 540 };
+const poster = `${src}.jpg`;
+---
+<figure class="loop">
+  <video autoplay muted loop playsinline preload="metadata" poster={poster} width={size.width} height={size.height} aria-label={caption}>
+    <source src={`${src}.webm`} type="video/webm" />
+    <source src={`${src}.mp4`} type="video/mp4" />
+  </video>
+  <figcaption class="meta">{caption}</figcaption>
+</figure>

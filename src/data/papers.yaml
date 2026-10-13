@@ -1,0 +1,191 @@
+# Papers and earlier work. Schema: src/content.config.ts.
+# The page groups entries by year, newest year first. Within a year, entries sort by the
+# optional `date` (venue or posting date), newest first; undated entries follow, by id.
+# For entries with an arXiv id, title and author names are copied verbatim from the arXiv API.
+
+- id: who-aggregates-information
+  title: "Who Aggregates Information? Screening, Rent, and the Coexistence of CLOB and AMM Prediction Markets"
+  authors: [Chengqi Zang, Gabriel P. Andrade, Tomoyuki Nakajima]
+  year: 2026
+  date: 2026-09
+  venue: arXiv preprint; CIRJE discussion paper
+  arxiv: "2609.20017"
+  pdf: https://www.cirje.e.u-tokyo.ac.jp/research/dp/2026/2026cf1277.pdf
+  summary: >-
+    Order-book market makers in prediction markets do not earn from spreads but from
+    carrying the under-priced side of behavioural tail demand to settlement, which
+    screens informed traders out of the order-book and towards any coexisting automated market maker.
+  selected: true
+
+- id: credibly-neutral-oracles
+  title: Manipulation-Resistant AI Oracles via Credible Neutrality
+  authors: [Mary Monroe, Gabriel P. Andrade, Rafael Frongillo, Bo Waggoner]
+  year: 2026
+  date: 2026-07
+  venue: Poster at the Game Theory and Mechanism Design with LLMs workshop, ACM EC 2026
+  pdf: https://blog.gensyn.ai/content/files/2026/08/Manipulation-Resistant-AI-Oracles-via-Credible-Neutrality.pdf
+  links:
+    - { label: Blog post, url: https://www.gensyn.ai/research/credibly-neutral-ai-oracles }
+    - { label: Workshop, url: https://llm-incentives.com/ }
+  summary: >-
+    If the first-pass report in a dispute-based oracle is credibly neutral and
+    accurate, the vote needed to overturn it can be raised and manipulation
+    becomes provably harder; without neutrality, no threshold does better
+    than a coin flip.
+  selected: true
+
+- id: evidence-markets
+  title: Evidence Markets
+  authors: [Safwan Hossain, Gabriel Andrade, Chengqi Zang, Yiling Chen]
+  year: 2026
+  date: 2026-06
+  venue: arXiv preprint; poster at the Game Theory and Mechanism Design with LLMs workshop, ACM EC 2026
+  arxiv: "2606.07434"
+  links:
+    - { label: Blog post, url: https://www.gensyn.ai/research/markets-that-explain-themselves }
+  summary: >-
+    A generalization of prediction markets that pays traders for evidence as
+    well as forecasts, and can resolve on the accumulated evidence when no
+    external ground truth exists.
+  selected: true
+
+- id: perishable-utility-markets
+  title: Two-Sided Market Design for Goods with Perishable Utility
+  authors: [Chengqi Zang, Gabriel P. Andrade]
+  year: 2025
+  date: 2025-11
+  venue: arXiv preprint
+  arxiv: "2511.16357"
+  summary: >-
+    A two-sided market for goods that lose their value if unused, such as
+    compute: a load-based posted price handles price discovery and a greedy
+    second-price matching rule handles allocation, keeping providers truthful
+    at a tight competitive ratio.
+    A two-sided market design for goods that lose their value if unused, such as compute.
+    We use a load-based posted price to handle price discovery and a greedy second-price 
+    matching rule to handle allocations, so providers are kept truthful.
+
+- id: sapo
+  title: "Sharing is Caring: Efficient LM Post-Training with Collective RL Experience Sharing"
+  authors: [Jeffrey Amico, Gabriel Passamani Andrade, John Donaghy, Ben Fielding, Tristin Forbus, Harry Grieve, Semih Kara, Jari Kolehmainen, Yihua Lou, Christopher Nies, Edward Phillip Flores Nuño, Diogo Ortega, Shikhar Rastogi, Austin Virts, Matthew J. Wright]
+  year: 2025
+  date: 2025-09
+  venue: arXiv preprint
+  arxiv: "2509.08721"
+  links:
+    - { label: Blog post, url: https://www.gensyn.ai/research/sapo-efficient-lm-post-training-with-collective-rl }
+  summary: >-
+    A fully decentralised, asynchronous algorithm for post-training language
+    models with reinforcement learning, in which heterogeneous nodes share
+    rollouts rather than weights so that useful behaviour spreads across the
+    network.
+
+- id: hdee
+  title: "HDEE: Heterogeneous Domain Expert Ensemble"
+  authors: [Oğuzhan Ersoy, Jari Kolehmainen, Gabriel Passamani Andrade]
+  year: 2025
+  date: 2025-02
+  venue: Modular, Collaborative and Decentralized Deep Learning workshop, ICLR 2025
+  arxiv: "2502.19385"
+  links:
+    - { label: Blog post, url: https://www.gensyn.ai/research/diverse-expert-ensembles-embarrassingly-parallel-llms-from-diverse-experts }
+  summary: >-
+    Ensembles of small domain-expert language models trained in parallel do
+    better when the experts differ in size and training time to suit their
+    domain, beating homogeneous ensembles on 20 of 21 domains at the same
+    compute budget.
+
+- id: no-regret-turing-complete
+  title: No-Regret Learning in Games is Turing Complete
+  authors: [Gabriel P. Andrade, Rafael Frongillo, Georgios Piliouras]
+  year: 2023
+  date: 2023-07
+  venue: ACM EC 2023
+  arxiv: "2202.11871"
+  summary: >-
+    Replicator dynamics in matrix games can simulate any Turing machine, so
+    basic questions about where learning in a game ends up are undecidable.
+  selected: true
+
+- id: phd-thesis
+  title: "Dynamical and Graphical Perspectives on Multi-Agent Economic Systems: Chaos, Complexity, and Universality of Learning Behaviours"
+  authors: [Gabriel Passamani Andrade]
+  year: 2022
+  venue: PhD thesis, University of Colorado Boulder
+  links:
+    - { label: CU Scholar, url: https://scholar.colorado.edu/concern/graduate_thesis_or_dissertations/dv13zv493 }
+  summary: >-
+    Tools for understanding multi-agent economic systems away from equilibrium:
+    learning in games is shown to be universal from the viewpoints of both
+    dynamical systems and computability, alongside graphical models of exchange
+    and algorithms by which decentralised agents reach approximate equilibria.
+
+- id: electricity-market-dynamics
+  title: "Electricity Market Dynamics as Smooth Games: Organizing Gradient-Based Learners and Identifying Instabilities"
+  authors: [Gabriel P. Andrade, Braden C. Soper, Ryan A. Goldhahn]
+  year: 2021
+  date: 2021-07-20
+  venue: LLNL technical report
+  doi: 10.2172/1890814
+  pdf: https://www.osti.gov/servlets/purl/1890814
+  summary: >-
+    Electricity markets modelled as smooth games whose consumers are
+    gradient-based learners, with examples of how instabilities arise even
+    under reasonable local objectives and conditions under which local Nash
+    equilibria are stable fixed points of the dynamics.
+
+- id: graphical-economies-resale
+  title: Graphical Economies with Resale
+  authors: [Gabriel P. Andrade, Rafael Frongillo, Elliot Gorokhovsky, Sharadha Srinivasan]
+  year: 2021
+  date: 2021-07-18
+  venue: ACM EC 2021
+  arxiv: "2106.14397"
+  summary: >-
+    Exchange economies on a network, where agents trade only with their
+    neighbours, extended to allow resale, and what that does to equilibrium
+    prices.
+  selected: true
+
+- id: learning-arbitrarily-complex
+  title: Learning in Matrix Games can be Arbitrarily Complex
+  authors: [Gabriel P. Andrade, Rafael Frongillo, Georgios Piliouras]
+  year: 2021
+  date: 2021-08-15
+  venue: COLT 2021
+  arxiv: "2103.03405"
+  summary: >-
+    Learning dynamics in matrix games can approximate any dynamical system,
+    chaotic ones included. The loops below are learning trajectories in a
+    matrix game tracing the Lorenz attractor and the Chua circuit.
+  media:
+    - { src: /media/lorenz, caption: Lorenz attractor }
+    - { src: /media/chua, caption: Chua circuit }
+  selected: true
+
+- id: graph-models-neurodynamics
+  title: Graph Models of Neurodynamics to Support Oscillatory Associative Memories
+  authors: [Gabriel P. Andrade, Miklós Ruszinkó, Robert Kozma]
+  year: 2018
+  date: 2018-07
+  venue: IJCNN 2018
+  doi: 10.1109/IJCNN.2018.8489419
+  summary: Network models of oscillatory neural dynamics for associative memory.
+
+- id: breast-cancer-math-systems
+  title: Math Systems for Diagnosis and Treatment of Breast Cancer
+  authors: [Connor Amorin, Gabriel P. Andrade, Sandra Castro-Pearson, Abdel Kader Geraldo, Brandon Iles, Dean Katsaros, Terry Mullen, Sam Nguyen, Oliver Spiro, Melissa Sych]
+  year: 2017
+  venue: UMass Amherst Department of Mathematics & Statistics Newsletter
+  pdf: /seminaryear1_deptnewsletter.pdf
+  group: earlier
+
+- id: matroid-sperner
+  title: A Matroid Generalization of Sperner's Lemma
+  authors: [Gabriel Passamani Andrade, Andrés Rodríguez Rey, Alberto J. Ruiz Sandoval]   # as on the title page; supervisors credited in the venue
+  year: 2015
+  venue: MSRI-UP 2015 research report (Geometric Combinatorics Motivated by the Social Sciences); advised by Duane Cooper, Francis Edward Su, and Mutiara Sondjaja
+  pdf: /MSRIREUPaperZ.pdf
+  links:
+    - { label: MSRI-UP, url: https://www.slmath.org/msri-up/765 }
+  group: earlier
