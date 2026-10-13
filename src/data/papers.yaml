@@ -12,10 +12,9 @@
   arxiv: "2609.20017"
   pdf: https://www.cirje.e.u-tokyo.ac.jp/research/dp/2026/2026cf1277.pdf
   summary: >-
-    Order-book market makers in prediction markets earn not from spread but from
+    Order-book market makers in prediction markets do not earn from spreads but from
     carrying the under-priced side of behavioural tail demand to settlement, which
-    screens informed traders toward the automated market maker and lets the two
-    kinds of venue coexist.
+    screens informed traders out of the order-book and towards any coexisting automated market maker.
   selected: true
 
 - id: credibly-neutral-oracles
@@ -62,6 +61,9 @@
     compute: a load-based posted price handles price discovery and a greedy
     second-price matching rule handles allocation, keeping providers truthful
     at a tight competitive ratio.
+    A two-sided market design for goods that lose their value if unused, such as compute.
+    We use a load-based posted price to handle price discovery and a greedy second-price 
+    matching rule to handle allocations, so providers are kept truthful.
 
 - id: sapo
   title: "Sharing is Caring: Efficient LM Post-Training with Collective RL Experience Sharing"
