@@ -484,7 +484,7 @@ Changes to §2, §3 and §6 made on the `motion` branch; the text above is left 
 
 1. **Loops under the header.** The two dynamics videos move out of the COLT 2021 entry into a `<figure id="loops">`
    between the links row and About: side by side at every width (about 45% each on a phone), one figcaption that
-   links to the paper's entry and connects the loops to the texture. The entry keeps a plain "Loops" link in its link
+   links to the paper's entry. The entry keeps a plain "Loops" link in its link
    row. `site.loops`: `pair` (both loops) or `lorenz` (one larger Lorenz loop, the Chua loop stays in the entry). The
    posters are preloaded as the LCP candidates. `html { scroll-behavior: smooth }` outside reduced motion, so the
    in-page link scrolls rather than jumps.
