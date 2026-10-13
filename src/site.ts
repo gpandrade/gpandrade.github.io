@@ -4,6 +4,7 @@ export const site = {
   role: 'Researcher at Gensyn, working on information markets and the mechanisms behind them.',
   /** One sentence under the name. No affiliation; the bio carries that. */
   identity: 'Researcher working on information markets, mechanism design, and multi-agent systems.',
+  portraitAlt: 'Gabriel P. Andrade and his cat Sadie',
   jobTitle: 'Researcher',
   affiliation: { name: 'Gensyn', url: 'https://www.gensyn.ai/' },
   teamPage: 'https://www.gensyn.ai/team/gabriel-andrade',

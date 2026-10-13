@@ -135,23 +135,24 @@ a:hover {
   }
 }
 
-/* Header: photo, then name block (name, identity line, links row). Nothing crosses the column edges.
-   Under 720px the photo (120px) stacks above the name; from 720px it sits flush right at 160px,
-   top aligned with the cap height of the name, and the name block takes the remaining width. */
+/* Header: the portrait (3:4, drawn at its own ratio, never cropped), then the name block (name, identity line,
+   links row). Nothing crosses the column edges. Under 720px the portrait stacks above the name at 180px,
+   left-aligned. From 720px it floats right at 200px, flush with the column's right edge, its top on the cap height
+   of the name, and the name block, the About heading and the first bio paragraph run beside it. */
 .masthead {
   display: grid;
-  gap: 1.25rem 2rem;
-  align-items: start;
+  gap: 1.25rem;
 }
 .masthead .headshot {
   display: block;
-  width: 120px;
-  height: 120px;
+  width: 180px;
+  height: auto;
   border-radius: 4px;
 }
+/* The portrait's vignette runs within a few levels of the dark --bg, so a 1px rule keeps the frame a frame there.
+   No treatment in light mode. */
 @media (prefers-color-scheme: dark) {
   .masthead .headshot {
-    filter: brightness(0.85) saturate(0.9);
     box-shadow: 0 0 0 1px var(--rule);
   }
 }
@@ -165,18 +166,21 @@ a:hover {
 }
 @media (min-width: 720px) {
   .masthead {
-    grid-template-columns: 1fr 160px;
+    display: block;
   }
   .masthead .headshot {
-    width: 160px;
-    height: 160px;
-    grid-column: 2;
-    grid-row: 1;
-    margin-top: 3px; /* measured: puts the photo's top edge on the cap height of the name */
+    float: right;
+    width: 200px;
+    margin: 2px 0 1rem 2rem; /* top measured at quarter-pixel: the portrait's top edge on the cap height of the name */
   }
-  .masthead .nameblock {
-    grid-column: 1;
-    grid-row: 1;
+  /* A paragraph that starts beside the portrait stays beside it for its whole length (its own formatting context),
+     and one that starts below it runs full width, so no paragraph has lines both beside and under the portrait. */
+  .prose > p {
+    display: flow-root;
+  }
+  /* The loops figure and the sections after About clear the portrait. */
+  main > * + * {
+    clear: both;
   }
 }
 main > section:first-child h2 {

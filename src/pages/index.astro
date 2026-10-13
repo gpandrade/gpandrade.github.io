@@ -5,11 +5,11 @@ import Base from '../layouts/Base.astro';
 import Paper from '../components/Paper.astro';
 import LinkList from '../components/LinkList.astro';
 import DatedList from '../components/DatedList.astro';
-import VideoLoop from '../components/VideoLoop.astro';
+import Loops from '../components/Loops.astro';
 import Egg from '../components/Egg.astro';
 import { site } from '../site';
 import { inlineHtml } from '../lib/inline';
-import headshot from '../assets/headshot.png';
+import headshot from '../assets/headshot.jpg';
 
 const all = (await getCollection('papers')).filter((p) => !p.data.draft);
 
@@ -42,10 +42,24 @@ const featuredSrcs = featured.map((m) => m.src);
 const loopNames = featured.map((m) => `the ${m.caption}`);
 const loopsText =
   loopNames.length > 1 ? `${loopNames[0]} (left) and ${loopNames[1]} (right)` : loopNames[0] ?? '';
+const loops =
+  loopsPaper && featured.length > 0
+    ? { media: featured, paper: { id: loopsPaper.id, title: loopsPaper.data.title, venue: loopsPaper.data.venue }, text: loopsText }
+    : null;
 ---
 <Base preloadImages={featured.map((m) => `${m.src}.jpg`)}>
   <header class="masthead">
-    <Image class="headshot" src={headshot} alt={site.name} width={220} height={220} loading="eager" />
+    <Image
+      class="headshot"
+      src={headshot}
+      alt={site.portraitAlt}
+      width={300}
+      height={400}
+      widths={[200, 360, 400]}
+      sizes="(min-width: 720px) 200px, 180px"
+      loading="eager"
+      fetchpriority="high"
+    />
     <div class="nameblock">
       <h1>{site.name}{site.egg && site.texture && <Egg />}</h1>
       <p class="identity">{site.identity}</p>
@@ -54,23 +68,13 @@ const loopsText =
   </header>
 
   <main id="main">
-    {loopsPaper && featured.length > 0 && (
-      <figure class="loops" id="loops">
-        <div class="loops-grid" data-count={featured.length}>
-          {featured.map((m) => <VideoLoop src={m.src} caption={m.caption} bare />)}
-        </div>
-        <figcaption class="meta">
-          Learning trajectories in a matrix game tracing {loopsText}, from{' '}
-          <a href={`#${loopsPaper.id}`}>{loopsPaper.data.title}</a> ({loopsPaper.data.venue}).
-        </figcaption>
-      </figure>
-    )}
     <section aria-labelledby="about">
       <h2 id="about">About</h2>
       <div class="prose">
         {site.bio.map((para) => <p set:html={inlineHtml(para)} />)}
       </div>
     </section>
+    {loops && <Loops {...loops} />}
 
     {papers.length > 0 && (
       <section aria-labelledby="papers">

@@ -62,7 +62,7 @@ Audience is mixed: EC/COLT academics, DeFi and crypto people, potential collabor
 --rule             #E2E2DD    #262A31
 ```
 
-Dark mode: `prefers-color-scheme`, no toggle. Body gets an explicit background. In dark mode the headshot is dimmed (brightness 0.85, saturate 0.9) and seated on a 1px `--rule` so it doesn't float as a bright block.
+Dark mode: `prefers-color-scheme`, no toggle. Body gets an explicit background. In dark mode the portrait sits on a 1px `--rule`: its vignette runs within a few levels of `--bg`, and the rule keeps the frame a frame. No treatment in light mode, and no dimming in either (that was for the earlier light-background photo).
 
 ### Type
 
@@ -84,14 +84,16 @@ Scale, 17px base:
 Left-aligned, ragged right. Content column `max-width: 42rem`, page padding 1.25rem, top margin 4rem desktop / 2rem mobile. At ≥ 720px the papers and writing lists use a two-column grid, `4.5rem 1fr`, with the year (or date) in the gutter, shown once per year group. Below 720px the gutter collapses to a line above the group.
 
 ```
-Gabriel P. Andrade                              [headshot 160px,
-Researcher working on information markets,       flush with the
+Gabriel P. Andrade                              [portrait 200px wide,
+Researcher working on information markets,       3:4, flush with the
 mechanism design, and multi-agent systems.       column's right edge,
-Email   Google Scholar   X   GitHub   LinkedIn   top on the cap height]
+Email   Google Scholar   X   GitHub   LinkedIn   top on the cap height,
+                                                 floated right so the
+About                                            name block, the About
+Bio paragraph one, in the narrow column           heading and the first
+beside the portrait for its whole length.        paragraph run beside it]
 
-About
-Bio paragraph one.
-Bio paragraph two.
+Bio paragraph two, full width.
 
 Papers
 2026       Evidence Markets
@@ -124,7 +126,7 @@ Writing
 Gabriel P. Andrade   Source on GitHub
 ```
 
-Headshot: square, 4px radius (not a circle). From 720px, 160px inside the column, flush with its right edge, top edge on the cap height of the name (measured, not eyeballed); the name block takes the remaining width and nothing crosses the column edges at any width. Under 720px, 120px above the name, left-aligned.
+Portrait: the 3:4 composite of Gab and his cat Sadie, drawn at its own ratio and never cropped (the whole frame is the point), 4px radius (not a circle), alt text "Gabriel P. Andrade and his cat Sadie". Source `src/assets/headshot.jpg`, 900px wide, under 400 KB; the original under `media-src/`. The build emits 200/360/400px WebPs with `sizes`, a true 2× asset at both rendered widths. From 720px, 200px wide, flush with the column's right edge, top edge on the cap height of the name (measured, not eyeballed: 2px of margin); the name block takes the remaining width and nothing crosses the column edges at any width. It floats right, so the name block, the About heading and the first bio paragraph run beside it; a paragraph that starts beside the portrait stays in the narrow column for its whole length (`display: flow-root`) and one that starts below it runs full width, so no paragraph has lines both beside and under the portrait. The loops figure follows About and clears the portrait. Under 720px, 180px above the name, left-aligned.
 
 Videos: two-up `<figure>` inside the COLT 2021 entry, each ~50% width on desktop, stacked on mobile, native aspect ratio, `figcaption` in meta style. Markup in §6.
 
@@ -288,7 +290,7 @@ Under `prefers-reduced-motion: reduce`, a short inline script before `</body>` r
 ### Images
 
 - Headshot: `dssi_portrait.png` (§14 Q3), 220×275, kept as is. Place in `src/assets/headshot.png`; render with Astro `<Image>` as a 220×220 crop shown at 160px (120px on mobile), `alt="Gabriel P. Andrade"`. Softness on retina screens is accepted; never upscale.
-- `og.png`: 1200×630, site palette, name + role line + headshot at 220px (no upscaling), the site URL in the accent, no texture. Made once by screenshotting an HTML card with Playwright (`scratchpad`, not a build dependency); the PNG is committed.
+- `og.png`: 1200×630, site palette, the portrait at left at full height (473×630, from the `media-src/` original), name and identity line at right, the site URL in the accent, no texture. Made once by screenshotting an HTML card with Playwright (`scratchpad`, not a build dependency); the PNG is committed.
 - `favicon.svg`: a monogram in the accent colour. Keep it under 1 KB.
 
 ### PDFs
@@ -559,3 +561,13 @@ names from anywhere else.
 8. **Files.** `src/lib/egg.ts`, `src/lib/egg-trigger.ts`, `src/components/Egg.astro`, the `.node` rules in
    `global.css`, the `shock` additions in `texture.ts`, the flag, and one line in `index.astro`. Deleting the first
    four and the flag removes the whole thing.
+
+## 18. Portrait (2026-10-13)
+
+The square headshot is replaced by a 3:4 composite portrait (Gab and his cat Sadie), never cropped. Decisions taken in this pass:
+
+1. Source: the original PNG archived in `media-src/`; the working source is a 900px-wide mozjpeg JPEG at q94 (363 KB), the largest under the 400 KB cap; the old `headshot.png` removed.
+2. Sizes: 200px from 720px, flush with the column's right edge, top on the cap height (2px of margin, measured at quarter-pixel in both schemes); 180px under 720px, above the name, left-aligned. `widths` 200/360/400 with `sizes`, so phones and retina desktops get the 2× file.
+3. Layout: two were reviewed, a grid column beside the name block (the header row growing to the portrait's height, the loops figure directly under the header) and the float. Gab chose the float: the About heading and first paragraph run beside the portrait and the loops figure follows About. A paragraph that starts beside the portrait stays beside it for its whole length, so no line juts out under the portrait mid-paragraph; the cost is the space under the portrait when that paragraph runs past its bottom.
+4. Dark mode: the brightness/saturation dim is gone; the 1px `--rule` stays because the portrait's edges measure within a few levels of the dark `--bg`. Light mode: nothing.
+5. `og.png` regenerated with the portrait at left, full height; favicon unchanged. Lighthouse unchanged at 98/100/100/100, FCP 0.9 s, LCP 2.4 s, for both layouts.
