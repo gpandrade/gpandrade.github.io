@@ -156,8 +156,7 @@
   arxiv: "2103.03405"
   summary: >-
     Learning dynamics in matrix games can approximate any dynamical system,
-    chaotic ones included. The loops below are learning trajectories in a
-    matrix game tracing the Lorenz attractor and the Chua circuit.
+    chaotic ones included.
   media:
     - { src: /media/lorenz, caption: Lorenz attractor }
     - { src: /media/chua, caption: Chua circuit }

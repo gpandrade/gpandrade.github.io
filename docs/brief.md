@@ -477,3 +477,28 @@ Taken from screenshots at 1280px and 390px, light and dark, in three rounds:
 4. Texture: shipped on if it meets the §3 budget; on/off pair in the PR screenshot set.
 5. Reduced motion: inline script, one render per video.
 6. Headshot kept as is; MSRI authors as on the title page with supervisors credited in the venue; HDEE venue from the ICLR page.
+
+## 16. Motion pass (2026-10-13)
+
+Changes to §2, §3 and §6 made on the `motion` branch; the text above is left as written.
+
+1. **Loops under the header.** The two dynamics videos move out of the COLT 2021 entry into a `<figure id="loops">`
+   between the links row and About: side by side at every width (about 45% each on a phone), one figcaption that
+   links to the paper's entry and connects the loops to the texture. The entry keeps a plain "Loops" link in its link
+   row. `site.loops`: `pair` (both loops) or `lorenz` (one larger Lorenz loop, the Chua loop stays in the entry). The
+   posters are preloaded as the LCP candidates. `html { scroll-behavior: smooth }` outside reduced motion, so the
+   in-page link scrolls rather than jumps.
+2. **Texture engine rewritten** (`src/lib/texture.ts`). The old layer re-sampled the warp from a Lorenz trajectory on
+   every scroll event (24 Lorenz units per page, about one wing orbit per wheel tick) and displaced vertices
+   instantaneously, so it wobbled; its line parities also made a 144 px triangular arrangement rather than a kagome.
+   Now: a damped follower on scroll (τ 0.22 s); vertices advect through the Hamiltonian field of the RPS replicator's
+   conserved quantity (the same streamlines as the replicator orbits, area-preserving) with a weak spring (τ 20 s) and
+   a cap of 0.6 cell; Lorenz drives the field offsets at about 3 units per page; an optional idle drift cycles once per
+   120 s; the loop idles when nothing moves. The static frame stays an inline SVG (true-scale straight kagome lines);
+   the live layer is a canvas, which the full variant needs for per-edge opacity. Budget: 20 KB inline SVG plus JS.
+   Engine API on `window.texture`: `impulse(x, y, energy)`, `heat`, `wake()`, `displacement`. Nothing calls it yet.
+3. **Variants behind `site.textureVariant`**: `conservative` (kagome, stirred) and `full` (the drawn edge set also
+   transforms along the document: kagome at the top, the full triangular set through the middle, a honeycomb at the
+   bottom). `site.textureIdle` toggles the idle drift.
+4. Review material (screenshots, recordings, Lighthouse reports) lives in the session scratchpad, not the repo;
+   `docs/screenshots/` is gone.
