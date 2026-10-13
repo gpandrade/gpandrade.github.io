@@ -38,4 +38,7 @@ export const site = {
   textureVariant: ((import.meta.env.PUBLIC_TEXTURE_VARIANT as string | undefined) ?? 'full') as 'conservative' | 'full',
   /** Slow drift while nothing is scrolling (one cycle per two minutes); the frame loop otherwise idles. */
   textureIdle: import.meta.env.PUBLIC_TEXTURE_IDLE !== 'off',
+  /** Where the dynamics loops live. 'pair': both loops in a figure under the header and the paper keeps a "Loops"
+   *  link. 'lorenz': one larger Lorenz loop under the header; the Chua loop stays in the paper. */
+  loops: ((import.meta.env.PUBLIC_LOOPS as string | undefined) ?? 'pair') as 'pair' | 'lorenz',
 } as const;
