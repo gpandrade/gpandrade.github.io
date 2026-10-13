@@ -6,7 +6,7 @@ Built with [Astro](https://astro.build): one page, one typeface, no client-side 
 
 - `src/data/papers.yaml`: papers and earlier work. Schema in `src/content.config.ts`; a bad entry fails the build.
 - `src/data/writing.yaml`: posts elsewhere.
-- `src/site.ts`: name, identity line, links row, bio, and the two flags (`texture`, `videoFilter`).
+- `src/site.ts`: name, identity line, links row, bio, and the flags (`texture`, `textureVariant`, `textureIdle`, `videoFilter`, `loops`).
 - `public/`: files served at the site root, including two PDFs that predate the rebuild and keep their URLs.
 - `media-src/`: archive copies of the two dynamics videos; not deployed.
 - `docs/brief.md`: the full spec, including the design decisions.
