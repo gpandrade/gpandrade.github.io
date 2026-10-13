@@ -25,12 +25,12 @@ export const site = {
     { label: 'LinkedIn', url: 'https://www.linkedin.com/in/gpandrade' },
   ],
   bio: [
-    'I work at [Gensyn](https://www.gensyn.ai/research) on information markets: mechanisms that pay people and models to reveal what they know, and the multi-agent systems that take shape once many strategic participants trade on the result. Most of my work sits where mechanism design, information elicitation, and multi-agent learning meet.',
-    'Before Gensyn I was an Applied Scientist at Amazon, working on fraud and bad-actor detection. I received my PhD in computer science from the University of Colorado Boulder in 2022, advised by Rafael Frongillo and Joshua Grochow, where I studied the dynamics of learning in games. Before that I did an MS in applied mathematics at UMass Amherst.',
+    'I work at [Gensyn](https://www.gensyn.ai/research) on information markets: mechanisms that pay people and models to reveal what they know, and the multi-agent systems that take shape once many strategic participants trade on the result. Most of my work sits where mechanism design, information elicitation, and multi-agent learning intersect.',
+    'Before Gensyn I was an Applied Scientist at Amazon, working on fraud and bad-actor detection. I received my PhD in computer science from the University of Colorado Boulder in 2022, advised by Rafael Frongillo and Joshua Grochow, where I studied the dynamics of learning in games. Before that, I did an MS in applied mathematics at UMass Amherst.',
   ],
   /** Treatment of the video loops. 'hue' re-colours the red-orange trajectories onto the accent hue in both
    *  schemes; 'none' leaves them; 'invert' is hue-matched in light and inverted to a dark field in dark mode. */
-  videoFilter: ((import.meta.env.PUBLIC_VIDEO_FILTER as string | undefined) ?? 'hue') as 'hue' | 'none' | 'invert',
+  videoFilter: ((import.meta.env.PUBLIC_VIDEO_FILTER as string | undefined) ?? 'invert') as 'hue' | 'none' | 'invert',
   /** The one decorative element: a faint tessellation behind the page, warped by learning dynamics as you scroll. */
   texture: import.meta.env.PUBLIC_TEXTURE !== 'off',
 } as const;
