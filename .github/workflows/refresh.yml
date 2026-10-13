@@ -1,0 +1,52 @@
+# Weekly papers refresh (docs/brief.md section 10). Runs scripts/refresh.py against OpenAlex
+# and arXiv and opens or updates one pull request on the branch refresh/papers. It is a
+# separate workflow from deploy.yml on purpose: nothing here can fail a deploy, and an API
+# outage is skipped and reported, not a failure.
+#
+# Needs, once, in repo Settings > Actions > General > Workflow permissions: "Read and write"
+# and "Allow GitHub Actions to create and approve pull requests".
+name: Papers refresh
+on:
+  schedule:
+    - cron: '17 6 * * 1'   # Mondays, 06:17 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Run the script and put the report in the job summary, but open no pull request
+        type: boolean
+        default: false
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: refresh-papers
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - run: pip install --quiet -r scripts/requirements.txt
+      - name: Query OpenAlex and arXiv
+        id: refresh
+        run: python scripts/refresh.py --report "$RUNNER_TEMP/report.md" --outputs "$GITHUB_OUTPUT"
+      - name: Job summary
+        run: cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: Open or update the pull request
+        if: ${{ !inputs.dry_run }}
+        id: pr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          branch: refresh/papers
+          delete-branch: true
+          add-paths: src/data/papers.yaml
+          commit-message: ${{ steps.refresh.outputs.title }}
+          title: ${{ steps.refresh.outputs.title }}
+          body-path: ${{ runner.temp }}/report.md
+      - name: Pull request result
+        if: ${{ !inputs.dry_run }}
+        run: echo "Pull request ${{ steps.pr.outputs.pull-request-operation || 'not needed (no change to papers.yaml)' }} ${{ steps.pr.outputs.pull-request-url }}" >> "$GITHUB_STEP_SUMMARY"
