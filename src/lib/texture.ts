@@ -10,6 +10,10 @@
  *
  * `staticLines` is the build-time frame (no JS, or reduced motion). `createTexture` runs the live layer on a canvas.
  * Nothing but the canvas and the scroll/resize listeners touch the DOM, so the engine can be reused elsewhere.
+ *
+ * `shock` is the one loud thing the engine can do, for the easter egg (src/lib/egg.ts): crests travel outward from a
+ * point, vertices under a crest scatter along the field, edges behind the front light up through a hue cycle, and it
+ * all cools back to the hairline in about six seconds. At rest the frame is byte-identical to the static one.
  */
 
 export const PITCH = 72;
@@ -55,6 +59,14 @@ export interface Texture {
   impulse(x: number, y: number, energy: number): void;
   /** 0–1. Mixes the stroke colour from the ink tint toward the accent tint (same contrast, different hue). */
   heat: number;
+  /** Launch a shockwave from a viewport point. `energy` 0–1. Three crests cross the lattice at about 900 px/s;
+   *  vertices under a crest scatter along the dynamics field, edges behind the front flash through a hue cycle, and
+   *  the lattice relaxes to the hairline over about six seconds. A second call restarts it from the new point. */
+  shock(x: number, y: number, energy: number): void;
+  /** Cut a running shock short: no further crests, and a one-second cool-down. */
+  settle(): void;
+  /** True while a shock is running. */
+  readonly excited: boolean;
   /** Restart the frame loop (it idles when nothing is changing). */
   wake(): void;
   destroy(): void;
@@ -78,6 +90,20 @@ const IMPULSE_GAIN = 45; // px/s at unit energy
 const SLOW_MS = 83; // tick interval when only slow processes are running (~12 fps)
 const REST = 0.08; // residual displacement (cells) below which relaxation is invisible and the loop stops
 const ALPHA_LEVELS = 12;
+// The shock. Crests are Gaussian rings; the glow behind the front decays with COOL_TAU; the whole thing is over at
+// SHOCK_T. Gains are px/s at unit energy under the peak of a crest (a crest passes a vertex in about 0.15 s).
+const WAVE_V = 900; // crest speed, px/s
+const CRESTS = 3;
+const CREST_GAP = 0.28; // s between crests
+const CREST_W = 70; // px, crest half-width
+const SHOCK_T = 6; // s
+const COOL_TAU = 1.4; // s, glow decay once the front has passed
+const SHOCK_GAIN = 1100; // field advection under a crest
+const SHOCK_PUSH = 110; // radial push under a crest
+const SHOCK_RELAX = 1.6; // relaxation time constant while excited, so the lattice heals as it cools
+const HUE_BANDS = 240; // px per hue cycle along the radius
+const HUE_RATE = 0.7; // hue cycles per second at a fixed edge
+const HUES = 24, GLOW_LEVELS = 8;
 
 /**
  * The stirring field. Zero-sum RPS replicator dynamics conserve the product of the three strategy weights, so its
@@ -115,7 +141,10 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
   let rx = new Float32Array(0), ry = rx, dx = rx, dy = rx; // rest and displacement per vertex
   let ea = new Int32Array(0), eb = ea; // edge endpoints
   let ek = new Uint8Array(0), eh = ek, bucket = ek; // kagome flag, honeycomb flag, alpha bucket
-  let ey = new Float32Array(0); // edge midpoint rest y, for the structure phase
+  let ex = new Float32Array(0), ey = ex; // edge midpoint at rest, for the structure phase and the shock
+  let vd = new Float32Array(0), ed = vd; // distances from the shock origin (vertices, edges), set per shock
+  let order = new Int32Array(0); // edge order for the glow pass
+  const count = new Int32Array(HUES * GLOW_LEVELS + 1);
   let docH = 1;
 
   function build(): void {
@@ -127,7 +156,7 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
     rows = Math.ceil(hBuilt / row) + 3;
     n = cols * rows;
     rx = new Float32Array(n); ry = new Float32Array(n); dx = new Float32Array(n); dy = new Float32Array(n);
-    const A: number[] = [], B: number[] = [], K: number[] = [], H: number[] = [], Y: number[] = [];
+    const A: number[] = [], B: number[] = [], K: number[] = [], H: number[] = [], X: number[] = [], Y: number[] = [];
     for (let j = 0; j < rows; j++) {
       for (let i = 0; i < cols; i++) {
         const v = j * cols + i;
@@ -147,13 +176,17 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
           A.push(v); B.push(nj * cols + ni);
           K.push((line & 1) === CHOSEN[f] ? 1 : 0);
           H.push(missing === HEX_COLOUR ? 1 : 0);
-          Y.push((ry[v]! + ry[nj * cols + ni]!) * 0.5);
+          // Midpoint from the neighbour's rest formula: its rx/ry entry is not filled in yet.
+          X.push((rx[v]! + (ni + (nj & 1) * 0.5) * a - a) * 0.5);
+          Y.push((ry[v]! + (nj - 1) * row) * 0.5);
         }
       }
     }
     m = A.length;
     ea = Int32Array.from(A); eb = Int32Array.from(B); ek = Uint8Array.from(K); eh = Uint8Array.from(H);
-    ey = Float32Array.from(Y); bucket = new Uint8Array(m);
+    ex = Float32Array.from(X); ey = Float32Array.from(Y); bucket = new Uint8Array(m);
+    vd = new Float32Array(n); ed = new Float32Array(m); order = new Int32Array(m);
+    if (shock) aim(shock.x, shock.y);
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(hBuilt * dpr);
     canvas.style.width = `${w}px`;
@@ -167,7 +200,27 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
   let clock = 0; // idle wall-clock, s
   const f = new Float64Array(2);
   const impulses: { x: number; y: number; e: number; age: number }[] = [];
+  let shock: { x: number; y: number; e: number; t: number; crests: number; settled: number } | null = null;
+  let hueCss: string[] = [];
   let running = false, timer = 0, last = 0;
+
+  /** Distances from a shock origin, from rest positions (vertices move less than a cell). */
+  function aim(x: number, y: number): void {
+    for (let v = 0; v < n; v++) vd[v] = Math.hypot(rx[v]! - x, ry[v]! - y);
+    for (let e = 0; e < m; e++) ed[e] = Math.hypot(ex[e]! - x, ey[e]! - y);
+  }
+
+  /** The crest profile at distance d and shock age t: a sum of Gaussian rings. */
+  function crests(d: number, t: number, k: number): number {
+    let sum = 0;
+    for (let i = 0; i < k; i++) {
+      const r = WAVE_V * (t - i * CREST_GAP);
+      if (r < -CREST_W) break;
+      const u = (d - r) / CREST_W;
+      sum += Math.exp(-u * u);
+    }
+    return sum;
+  }
 
   function lorenz(units: number): void {
     pending += units;
@@ -190,6 +243,8 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
   function readColour(): void {
     canvas.style.color = `color-mix(in srgb, var(--texture-hot) ${Math.round(heat * 100)}%, var(--texture-cold))`;
     colour = getComputedStyle(canvas).color;
+    const l = scheme.matches ? 62 : 46;
+    hueCss = Array.from({ length: HUES }, (_, i) => `hsl(${(i * 360) / HUES} 90% ${l}%)`);
   }
 
   /** One step of the dynamics. Returns true if anything beyond slow relaxation is still moving. */
@@ -205,7 +260,11 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
     const du = 0.15 * (lz0 / 20) + (idle ? 0.1 * Math.cos(theta) : 0);
     const dv = 0.15 * (lz2 / 50 - 0.5) + (idle ? 0.1 * Math.sin(theta) : 0);
     const gain = GAIN * dS + (idle ? IDLE_GAIN * dt : 0);
-    const relax = 1 - Math.exp(-dt / RELAX_TAU);
+    if (shock) {
+      shock.t += dt;
+      if (shock.t > SHOCK_T || (shock.settled >= 0 && shock.t - shock.settled > 1.2)) shock = null;
+    }
+    const relax = 1 - Math.exp(-dt / (shock ? SHOCK_RELAX : RELAX_TAU));
     for (let k = impulses.length - 1; k >= 0; k--) {
       const p = impulses[k]!;
       p.age += dt;
@@ -217,9 +276,14 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
       let ddx = dx[v]!, ddy = dy[v]!;
       const x = rx[v]! + ddx, y = ry[v]! + ddy;
       let ax = 0, ay = 0;
-      if (gain !== 0) {
+      const kick = shock ? crests(vd[v]!, shock.t, shock.crests) * shock.e * dt : 0;
+      if (gain !== 0 || kick > 1e-4) {
         field(x, y, lx, ly, du, dv, f);
-        ax = f[0]! * gain; ay = f[1]! * gain;
+        ax = f[0]! * (gain + SHOCK_GAIN * kick); ay = f[1]! * (gain + SHOCK_GAIN * kick);
+        if (kick > 1e-4) {
+          const ox = x - shock!.x, oy = y - shock!.y, d = Math.hypot(ox, oy) + 1;
+          ax += (ox / d) * SHOCK_PUSH * kick; ay += (oy / d) * SHOCK_PUSH * kick;
+        }
       }
       for (const p of impulses) {
         const ox = x - p.x, oy = y - p.y, d2 = ox * ox + oy * oy;
@@ -236,7 +300,7 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
       dx[v] = ddx; dy[v] = ddy;
     }
     maxDisp = Math.sqrt(maxD2);
-    return Math.abs(target - S) > 0.1 || Math.abs(dS) > 0.05 || impulses.length > 0;
+    return Math.abs(target - S) > 0.1 || Math.abs(dS) > 0.05 || impulses.length > 0 || shock !== null;
   }
 
   function render(): void {
@@ -271,6 +335,52 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
+    if (shock) glow(shock);
+  }
+
+  /** The technicolor pass: edges behind the front, keyed by hue band and glow level, drawn over the hairlines. */
+  function glow(sh: NonNullable<typeof shock>): void {
+    const t = sh.t;
+    let env = 1 - smooth(SHOCK_T - 1.5, SHOCK_T, t);
+    if (sh.settled >= 0) env *= 1 - smooth(0, 1, t - sh.settled);
+    count.fill(0);
+    const keys = bucket; // reuse: the hairline buckets are done with for this frame
+    for (let e = 0; e < m; e++) {
+      const d = ed[e]!, s = t - d / WAVE_V;
+      let g = 0.9 * crests(d, t, sh.crests) + (s > 0 ? 0.7 * Math.exp(-s / COOL_TAU) : 0);
+      if (g > 1) g = 1;
+      // Edges the structure phase hides still glow, faintly, so the whole lattice shows through the flash.
+      const struct = keys[e] === 255 ? 0 : keys[e]! / (ALPHA_LEVELS - 1);
+      g *= sh.e * env * (0.3 + 0.7 * struct);
+      if (g < 0.06) { keys[e] = 255; continue; }
+      const hue = (((d / HUE_BANDS - t * HUE_RATE) % 1) + 1) % 1;
+      const level = Math.round(g * (GLOW_LEVELS - 1));
+      const key = Math.floor(hue * HUES) * GLOW_LEVELS + level;
+      keys[e] = key;
+      count[key + 1]!++;
+    }
+    for (let k = 1; k <= HUES * GLOW_LEVELS; k++) count[k]! += count[k - 1]!;
+    for (let e = 0; e < m; e++) if (keys[e] !== 255) order[count[keys[e]!]!++] = e;
+    let start = 0;
+    for (let key = 0; key < HUES * GLOW_LEVELS; key++) {
+      const end = count[key]!;
+      if (end === start) continue;
+      const level = key % GLOW_LEVELS;
+      ctx.beginPath();
+      for (let i = start; i < end; i++) {
+        const e = order[i]!, p = ea[e]!, q = eb[e]!;
+        ctx.moveTo(rx[p]! + dx[p]!, ry[p]! + dy[p]!);
+        ctx.lineTo(rx[q]! + dx[q]!, ry[q]! + dy[q]!);
+      }
+      ctx.strokeStyle = hueCss[(key - level) / GLOW_LEVELS]!;
+      ctx.globalAlpha = (0.85 * (level + 1)) / GLOW_LEVELS;
+      ctx.lineWidth = 1 + (0.8 * level) / (GLOW_LEVELS - 1);
+      ctx.stroke();
+      start = end;
+    }
+    ctx.globalAlpha = 1;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = colour;
   }
 
   /** Full rate while input or impulses are live; a slow timer while only relaxation or idle drift is moving
@@ -282,7 +392,7 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
     const active = step(dt);
     render();
     if (active) requestAnimationFrame(tick);
-    else if (opts.idle || maxDisp > REST * a) timer = setTimeout(() => { timer = 0; requestAnimationFrame(tick); }, SLOW_MS);
+    else if (opts.idle || maxDisp > REST * a) timer = window.setTimeout(() => { timer = 0; requestAnimationFrame(tick); }, SLOW_MS);
     else running = false; // relaxed to within REST of rest: nothing visible is changing, so stop
   }
 
@@ -316,6 +426,17 @@ export function createTexture(canvas: HTMLCanvasElement, opts: TextureOptions): 
       impulses.push({ x, y, e: Math.min(1, Math.max(0, energy)), age: 0 });
       wake();
     },
+    shock(x, y, energy) {
+      shock = { x, y, e: Math.min(1, Math.max(0, energy)), t: 0, crests: CRESTS, settled: -1 };
+      aim(x, y);
+      wake();
+    },
+    settle() {
+      if (!shock || shock.settled >= 0) return;
+      shock.settled = shock.t;
+      shock.crests = Math.min(CRESTS, Math.floor(shock.t / CREST_GAP) + 1); // crests already launched finish
+    },
+    get excited() { return shock !== null; },
     get heat() { return heat; },
     set heat(h: number) { heat = Math.min(1, Math.max(0, h)); readColour(); wake(); },
     wake,
