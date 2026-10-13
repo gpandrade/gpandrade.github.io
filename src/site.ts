@@ -41,4 +41,6 @@ export const site = {
   /** Where the dynamics loops live. 'pair': both loops in a figure under the header and the paper keeps a "Loops"
    *  link. 'lorenz': one larger Lorenz loop under the header; the Chua loop stays in the paper. */
   loops: ((import.meta.env.PUBLIC_LOOPS as string | undefined) ?? 'pair') as 'pair' | 'lorenz',
+  /** The easter egg (docs/brief.md §17): a lattice node after the name and the code; the module loads on demand. */
+  egg: import.meta.env.PUBLIC_EGG !== 'off',
 } as const;
