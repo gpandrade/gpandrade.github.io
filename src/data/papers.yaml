@@ -57,10 +57,6 @@
   venue: arXiv preprint
   arxiv: "2511.16357"
   summary: >-
-    A two-sided market for goods that lose their value if unused, such as
-    compute: a load-based posted price handles price discovery and a greedy
-    second-price matching rule handles allocation, keeping providers truthful
-    at a tight competitive ratio.
     A two-sided market design for goods that lose their value if unused, such as compute.
     We use a load-based posted price to handle price discovery and a greedy second-price 
     matching rule to handle allocations, so providers are kept truthful.
