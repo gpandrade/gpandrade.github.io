@@ -6,6 +6,7 @@ Personal site. Astro 7, deployed by .github/workflows/deploy.yml to GitHub Pages
 - Paper: add to src/data/papers.yaml (schema in src/content.config.ts). Required: id, title, authors, year, venue, one-sentence summary, and at least one of arxiv / doi / pdf / links. Optional `date` (YYYY-MM or YYYY-MM-DD) orders entries within a year, newest first. Author names from the arXiv API when an arXiv id exists; the owner's name renders as "Gabriel P. Andrade" wherever `authorMatch` hits.
 - Writing: src/data/writing.yaml.
 - Push to the default branch (master); Actions deploys in about a minute. A malformed entry fails the build with the field named.
+- Weekly refresh: .github/workflows/refresh.yml runs scripts/refresh.py (Mondays 06:17 UTC, or Actions → Papers refresh → Run workflow) and opens one PR on `refresh/papers` with unmatched OpenAlex works appended as `draft: true` entries, plus DOI hints in the PR body. Review there: write the summary, set `draft: false`, merge within the week (the next run regenerates the branch from master). False positives go in `ignore` in src/data/sources.yaml. Locally: `pip install -r scripts/requirements.txt && python scripts/refresh.py --dry-run`.
 
 ## Rules
 - Never rename or remove MSRIREUPaperZ.pdf or seminaryear1_deptnewsletter.pdf under public/; they are linked externally.

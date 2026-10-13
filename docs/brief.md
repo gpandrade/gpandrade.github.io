@@ -398,7 +398,7 @@ openalex_author_id: A5017847566    # primary profile (holds the EC/COLT papers)
 openalex_secondary_author_ids: [A5120316365]   # split profile that picked up a co-author's affiliation; Phase 2 queries both
 semantic_scholar_author_id: null   # optional second source
 mailto: gabriel@gensyn.ai          # OpenAlex polite pool
-ignore: []                         # false positives: OpenAlex work ids or arXiv ids
+ignore: []                         # false positives: OpenAlex work ids, arXiv ids, or DOIs (a DOI here also silences its hint)
 ```
 
 `scripts/refresh.py` (Python 3.11+, `requests`, `pyyaml`, nothing else):
@@ -410,6 +410,15 @@ ignore: []                         # false positives: OpenAlex work ids or arXiv
 5. Don't display citation counts. They drift and add nothing for this audience. (Storing them is harmless if wanted later.)
 
 Rate limits are not a concern at this volume: arXiv asks for ≥ 3 s between requests (one request here); OpenAlex polite pool is generous; S2 allows 100 requests per 5 minutes unauthenticated.
+
+Implementation notes (2026-10-13): `scripts/refresh.py` and `.github/workflows/refresh.yml`.
+
+- Drafts go at the end of `papers.yaml` (the page orders by year). The `id` is a slug of the title; rename it before the entry is first published if wanted. Title and authors come from arXiv when the work has an arXiv id, else from OpenAlex; venue, year, and date are OpenAlex's guesses and need checking.
+- A preprint and its published version are two OpenAlex works; they become one draft with the published venue, year, and DOI plus the arXiv id.
+- Hints are DOIs or arXiv ids a source lists that the entry lacks (from arXiv and OpenAlex), and an arXiv `journal_ref` while the venue still says preprint. A DOI in `ignore` silences its hint. Hints without a new entry change no file, so they open no PR; they are in the run's job summary under Actions.
+- Each run rebuilds `refresh/papers` from master and resets the branch when the content differs, so edits made on that branch are lost at the next run. Review and merge within the week, or merge the drafts as they are (they do not render) and edit on master.
+- The script edits the file as text; filling an empty `authors` from arXiv is its only in-place change. It re-parses the result and refuses to write if any other field moved. `--dry-run` prints the diff and the report and writes nothing.
+- Repo setting, once: Settings → Actions → General → Workflow permissions: read and write, plus "Allow GitHub Actions to create and approve pull requests". Both were already on when this shipped.
 
 ## 11. Phase 3, if wanted
 

@@ -9,6 +9,7 @@ Built with [Astro](https://astro.build): one page, one typeface, no client-side 
 - `src/site.ts`: name, identity line, links row, bio, and the flags (`texture`, `textureVariant`, `textureIdle`, `videoFilter`, `loops`).
 - `public/`: files served at the site root, including two PDFs that predate the rebuild and keep their URLs.
 - `media-src/`: archive copies of the two dynamics videos; not deployed.
+- `scripts/refresh.py`: the weekly papers refresh (`docs/brief.md` §10), run Mondays by `.github/workflows/refresh.yml`, which opens a pull request with new works as drafts.
 - `docs/brief.md`: the full spec, including the design decisions.
 
 Local development: `npm install`, then `npm run dev`. `npm run build` must pass before pushing template changes.
