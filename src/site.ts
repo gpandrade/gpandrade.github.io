@@ -42,7 +42,14 @@ export const site = {
   /** Where the dynamics loops live. 'pair': both loops in a figure under the header and the paper keeps a "Loops"
    *  link. 'lorenz': one larger Lorenz loop under the header; the Chua loop stays in the paper. */
   loops: ((import.meta.env.PUBLIC_LOOPS as string | undefined) ?? 'pair') as 'pair' | 'lorenz',
-  /** The easter egg (docs/brief.md §17, §19): four lattice nodes through the page and the code; the module loads on
+  /** The easter egg (docs/brief.md §17, §19, §20): lattice nodes through the page and the code; the module loads on
    *  demand. */
   egg: import.meta.env.PUBLIC_EGG !== 'off',
+  /** The nodes' density rule (§20). `every`: document px per node below 1024px (in the gaps between entries and
+   *  sections, at the column's edges) and from 1024px (in the margins); `out`: how far out in the margin a node sits
+   *  from the column edge; `max`: a cap on the count. */
+  nodes: { every: [550, 380], out: 80, max: 48 },
+  /** A node at rest: 'ink', monochrome at about three times the lattice's contrast, or 'tint', its guest's hue
+   *  mixed into the background. Hover, the pulse and a running guest show the hue either way. */
+  nodeRest: ((import.meta.env.PUBLIC_NODE_REST as string | undefined) ?? 'ink') as 'ink' | 'tint',
 } as const;

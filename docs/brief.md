@@ -609,3 +609,52 @@ scattered through the lattice at different depths of the page, found while scrol
 7. **Files.** `src/components/Egg.astro` (one node, by guest), the four placements in `index.astro`, `Loops.astro`
    (a slot in the grid) and `Base.astro` (the footer), the `.node` rules in `global.css`, `flowAt` and `onFrame` in
    `texture.ts`, `hue`, `onEnd` and a `data-guests` marker in `egg.ts`, and the rewritten `egg-trigger.ts`.
+
+## 20. Egg density (2026-10-13)
+
+Built on the `egg-density` branch, on the §19 nodes. The four fixed anchors become a density rule: the nodes are
+generated from the rendered layout at load and again whenever the page's width or height changes, so that there is
+always at least one fully in view on a phone and two or three on a desktop at any scroll position.
+
+1. **The rule** (numbers in `site.nodes`). Below 1024px: one node per 550px of document, in the vertical gaps between
+   entries and sections (a gap of at least 28px between the text, link and media boxes, text measured by its own line
+   boxes so a year label stretched down its grid row counts as one line; the gaps inside a section, 0.85em between
+   paragraphs and 1rem under a heading, are too small to qualify), at the column's edges, alternating sides, centred
+   in the gap and sized to it (24–32px; the glyph's lines stay hairlines). The walk down the page takes, from each
+   node, the gap that best fits 550px below: going past 605px costs four times as much as falling short, and a gap
+   that would shrink the node costs a little, so a long stretch is taken only when the layout leaves nothing nearer.
+   Entries sit about 340px apart on a phone, so in the papers list the walk takes every entry gap rather than every
+   other one at 680px, which would leave a 660px phone viewport (the browser bar open) with no node fully in view at
+   some positions. At 390 that gives 16 nodes 272–605px apart (median 376); at 720, 9 nodes 344–592px apart. From
+   1024px: in both margins, 80px out from the column edge, alternating, evenly from the name's cap-height centre to
+   the footer line's, one per 380px (13 nodes, 377px apart, at 1024 and 1280), so an 800px viewport always holds
+   two. A cap of 48. Without JS there are no nodes; the HTML carries none.
+2. **Guests.** Each node is bound to one of the four guests, cycling down the page in a fixed order (Lorenz, Chua,
+   replicator, spiral), so neighbours differ and all four appear within a screenful or two. The guest's hue shows on
+   hover, in the pulse and while its guest runs; the shock, the shards and the strokes start from the node as before.
+   The code fires a random guest from one of its nodes on screen, else from the viewport centre.
+3. **Rest state.** Monochrome: ink mixed 15% into the background in light and 21% in dark, three times the lattice's
+   5% and 7% (1.35:1 and 1.78:1 against the background, where the hairline is 1.10:1 and 1.17:1), no tint. `site.nodeRest` 'tint' (`PUBLIC_NODE_REST=tint`) keeps the §19 look, the hue mixed 40% into
+   the background; both are recorded on the review page.
+4. **Pulse.** One per session: the first node fully in view (8% clear of the bottom edge), a beat after load, and no
+   other node that session (`sessionStorage['gpandrade.egg.seen']`); not under reduced motion, not while put away. If
+   the page reflows before the beat, the pulse goes to the regenerated node.
+5. **Put away** hides every node (the container is `display: none`) and localStorage remembers; the code brings them
+   back with a beat of light, without firing, and clears the stored flag. There is no dimmed-but-present state.
+6. **Unchanged from §19:** five taps per node on a phone, counted per node; Escape; a second trigger ends a show;
+   the drift at the lattice's own amplitude (rest positions are the generated ones, so no layout is read per frame).
+7. **Probe in CI.** `scripts/probe-nodes.mjs` serves the build and checks the generated set at 390, 720, 1024 and
+   1280: no node box over a text, link or media box, the rule's placement and sizes, no overflow, how many nodes are
+   fully in view at every scroll position (also in a 660px phone viewport; a shortfall is a warning, since content
+   can lengthen a gapless block), and put away, reload and the code. The `probe` job in `deploy.yml` runs it on every
+   push to master and every pull request, and the deploy needs it; Playwright is a dev dependency (no browser
+   download on install) and the browser build is cached by version, so the job stays under two minutes. The scratchpad probe
+   (46 checks) covers the rest: lazy load, each guest from its own node, the code's origin, accumulation, stand-down,
+   taps, drift, the one pulse, reduced motion, resize regeneration and the rest colours.
+8. **Cost.** The texture script is 13.7 KB raw, 6.5 KB gzipped (was 11.7 / 5.4), against the 15 KB budget; the egg
+   chunk is unchanged at 9.3 KB and still loads on the first trigger step only. Lighthouse mobile unchanged, three runs
+   each against master: 98 / 100 / 100 / 100, FCP 0.9 s, LCP 2.4 s, TBT 0 ms, CLS 0, 9 requests.
+9. **Files.** `src/lib/egg-trigger.ts` (the rule and the nodes), `src/components/Texture.astro` (passes
+   `site.nodes`), `src/site.ts` (`nodes`, `nodeRest`), the `.nodes` and `.node` rules in `global.css`,
+   `scripts/probe-nodes.mjs`, the `probe` job in `.github/workflows/deploy.yml`. `Egg.astro` and the placements in
+   `index.astro`, `Loops.astro` and `Base.astro` are gone.
