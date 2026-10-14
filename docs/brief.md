@@ -649,7 +649,7 @@ always at least one fully in view on a phone and two or three on a desktop at an
    can lengthen a gapless block), and put away, reload and the code. The `probe` job in `deploy.yml` runs it on every
    push to master and every pull request, and the deploy needs it; Playwright is a dev dependency (no browser
    download on install) and the browser build is cached by version: the job took 44 s on its first run, with the browser
-   still to install, and the whole run 47 s. The scratchpad probe
+   still to install, 35 s with it cached, and the whole run 47 s. The scratchpad probe
    (46 checks) covers the rest: lazy load, each guest from its own node, the code's origin, accumulation, stand-down,
    taps, drift, the one pulse, reduced motion, resize regeneration and the rest colours.
 8. **Cost.** The texture script is 13.7 KB raw, 6.5 KB gzipped (was 11.7 / 5.4), against the 15 KB budget; the egg
