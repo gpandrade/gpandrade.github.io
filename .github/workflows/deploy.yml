@@ -2,13 +2,15 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 permissions:
   contents: read
   pages: write
   id-token: write
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 jobs:
   build:
@@ -18,8 +20,35 @@ jobs:
       - uses: withastro/action@v6
         with:
           node-version: 24
+  probe:
+    # The easter egg's node probe (docs/brief.md §20, scripts/probe-nodes.mjs): builds, then in headless Chromium
+    # checks the node set the texture script generates at 390, 720, 1024 and 1280 (no node box over a text, link or
+    # media box; the rule's placement; the put-away and code paths). A failure blocks the deploy. The browser is
+    # cached by Playwright version, so the job stays under two minutes.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - id: playwright
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v6
+        id: browser
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - if: steps.browser.outputs.cache-hit != 'true'
+        run: npx playwright install chromium
+      - run: node scripts/probe-nodes.mjs dist
   deploy:
-    needs: build
+    # On a pull request the two jobs above run as checks and nothing deploys.
+    if: github.event_name != 'pull_request'
+    needs: [build, probe]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

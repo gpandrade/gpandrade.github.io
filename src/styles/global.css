@@ -309,31 +309,43 @@ main > section:first-child h2 {
   stroke-width: 1;
 }
 
-/* The easter egg's nodes (docs/brief.md §19): four lattice vertices through the page, each in its own hue, dim at
-   rest, full on hover and while its guest runs (`lit`). `pulse` is the once-a-session hint when a node first comes
-   into view; `off` is the remembered put-away state, and a click on any dim node brings them all back. The box is
-   32px and the glyph 24px; negative margins make `left`/`right`/`top`/`bottom` the position of the centre. */
+/* The easter egg's nodes (docs/brief.md §20): lattice vertices generated through the page by the texture script
+   (src/lib/egg-trigger.ts), each bound to a guest whose hue shows on hover, while its guest runs (`lit`) and in the
+   once-a-session `pulse`. At rest a node is ink at about three times the lattice's contrast (15% of ink over the
+   background in light, 21% in dark, against the hairline's 5% and 7%); with site.nodeRest 'tint' it is the hue mixed
+   40% into the background instead. The container sits at the document origin and each node's position and size are
+   inline, in document px (the box is 32px, or smaller in a narrow gap; the glyph's lines stay hairlines); `off` is
+   the remembered put-away state, which hides them all. */
 :root {
   --node-l: 46%;
+  --node-ink: color-mix(in srgb, var(--ink) 15%, var(--bg));
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --node-l: 62%;
+    --node-ink: color-mix(in srgb, var(--ink) 21%, var(--bg));
   }
 }
-.masthead, .loops-grid, main > section, footer {
-  position: relative;
+.nodes {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+.nodes.off {
+  display: none;
 }
 .node {
   position: absolute;
-  width: 32px;
-  height: 32px;
-  margin: -16px;
   --node: hsl(var(--hue) 90% var(--node-l));
-  color: color-mix(in srgb, var(--node) 40%, var(--bg));
+  color: var(--node-ink);
   cursor: pointer;
   touch-action: manipulation;
   user-select: none;
+}
+[data-node-rest='tint'] .node {
+  color: color-mix(in srgb, var(--node) 40%, var(--bg));
 }
 .node svg {
   display: block;
@@ -344,16 +356,15 @@ main > section:first-child h2 {
   stroke: currentColor;
   stroke-width: 1;
 }
+.node path {
+  vector-effect: non-scaling-stroke;
+}
 .node circle {
   fill: currentColor;
   stroke: none;
 }
 .node:hover, .node.lit {
   color: var(--node);
-}
-.node.off {
-  color: var(--ink-2);
-  opacity: 0.25;
 }
 @media (prefers-reduced-motion: no-preference) {
   .node.pulse {
@@ -367,47 +378,6 @@ main > section:first-child h2 {
   }
   @keyframes node-swell {
     40% { transform: scale(1.3); }
-  }
-}
-/* Placement. Below 1024px the nodes sit in the vertical gaps between sections, at the column's edges: the Lorenz
-   node below the header's links row, the Chua node above the loops figure, the replicator node above the Papers
-   heading, the spiral node above the footer rule. From 1024px they move out into the margins, 80px from the column
-   edge (just over a cell), level with the name, the loops, the Papers heading and the footer line: the vertical
-   offsets put each node's centre on the cap-height centre of its heading's first letter (measured at 4x) or on the
-   centre of the video grid. */
-.node[data-guest='lorenz'] {
-  left: 1rem;
-  bottom: -1.25rem;
-}
-.node[data-guest='chua'] {
-  right: 1rem;
-  top: -1.25rem;
-}
-.node[data-guest='rps'] {
-  left: 1rem;
-  top: -1.5rem;
-}
-.node[data-guest='spiral'] {
-  right: 1rem;
-  top: -2rem;
-}
-@media (min-width: 1024px) {
-  .node[data-guest='lorenz'] {
-    left: -80px;
-    bottom: auto;
-    top: 0.95rem;
-  }
-  .node[data-guest='chua'] {
-    right: -80px;
-    top: 50%;
-  }
-  .node[data-guest='rps'] {
-    left: -80px;
-    top: 0.71rem;
-  }
-  .node[data-guest='spiral'] {
-    right: -80px;
-    top: 1.84rem;
   }
 }
 
